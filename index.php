@@ -3,10 +3,11 @@ use Everyman\Neo4j\Client;
 
 require('phar://neo4jphp.phar');
 
-echo getenv('NEO4J_REST_URL');
-
-$client = new Client('692740c56.hosted.neo4j.org', 7048);
-$client->getTransport()->setAuth('4f0d4c9c2', 'ccb7b7898');
+$neo4jConnection = parse_url(getenv('NEO4J_REST_URL'));
+$client = new Client($neo4jConnection['host'], $neo4jConnection['port']);
+$client->getTransport()
+	->useHttps($neo4jConnection['scheme'] == 'https')
+	->setAuth($neo4jConnection['user'], $neo4jConnection['pass']);
 
 try {
 	$info = $client->getServerInfo();
