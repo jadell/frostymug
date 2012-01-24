@@ -21,13 +21,14 @@ class WebUi
 	 */
 	public function indexAction()
 	{
-		echo $this->app['baseUrl']."<br>";
-		$client = $this->app['neo4j'];
-		try {
-			$info = $client->getServerInfo();
-			print_r($info['version']);
-		} catch (Exception $e) {
-			echo "Something went horribly askew!\n";
-		}
+		echo "Coming soon<br>";
+		// echo $this->app['baseUrl']."<br>";
+		// $client = $this->app['neo4j'];
+		// try {
+		// 	$info = $client->getServerInfo();
+		// 	print_r($info['version']);
+		// } catch (Exception $e) {
+		// 	echo "Something went horribly askew!\n";
+		// }
 	}
 }
