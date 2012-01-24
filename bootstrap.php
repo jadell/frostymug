@@ -8,8 +8,10 @@ define('APPLICATION_LIB', APPLICATION_ROOT.'/lib');
 require('phar://'.APPLICATION_LIB.'/neo4jphp.phar');
 require('phar://'.APPLICATION_LIB.'/silex.phar');
 spl_autoload_register(function ($className) {
-	$classFile = str_replace('\\',DIRECTORY_SEPARATOR,$className).'.php';
-	$classPath = APPLICATION_LIB.'/'.$classFile;
+	$classFile = $className;
+	$classFile = str_replace('_',DIRECTORY_SEPARATOR,$classFile);
+	$classFile = str_replace('\\',DIRECTORY_SEPARATOR,$classFile);
+	$classPath = APPLICATION_LIB.'/'.$classFile.'.php';
 	if (file_exists($classPath)) {
 		require($classPath);
 	}
@@ -37,6 +39,10 @@ $app['neo4j'] = $app->share(function ($app) {
 		->useHttps($neo4jConnection['scheme'] == 'https')
 		->setAuth($neo4jConnection['user'], $neo4jConnection['pass']);
 	return $client;
+});
+
+$app['brewerydb'] = $app->share(function ($app) {
+	return new Pintlabs_Service_Brewerydb(getenv('BREWERYDB_API_KEY'));
 });
 
 // Register controllers

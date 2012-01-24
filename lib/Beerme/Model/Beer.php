@@ -7,6 +7,7 @@ class Beer
 {
 	protected $app;
 	protected $id;
+	protected $name;
 
 	/**
 	 * Construct a beer
@@ -27,6 +28,7 @@ class Beer
 	{
 		return array(
 			'id' => $this->id,
+			'name' => $this->name,
 		);
 	}
 
@@ -41,6 +43,16 @@ class Beer
 	}
 
 	/**
+	 * Return the name
+	 *
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->name;
+	}
+
+	/**
 	 * Set the id
 	 *
 	 * @param integer $id
@@ -48,7 +60,19 @@ class Beer
 	 */
 	public function setId($id)
 	{
-		$this->id = $id;
+		$this->id = (integer)$id;
+		return $this;
+	}
+
+	/**
+	 * Set the name
+	 *
+	 * @param string $name
+	 * @return Beer
+	 */
+	public function setName($name)
+	{
+		$this->name = (string)$name;
 		return $this;
 	}
 }
