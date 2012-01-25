@@ -13,7 +13,8 @@ class Pintlabs_Service_Brewerydb
      *
      * @var string
      */
-    const BASE_URL = 'http://www.brewerydb.com/api';
+    // const BASE_URL = 'http://www.brewerydb.com/api';
+    const BASE_URL = 'http://api.playground.brewerydb.com';
 
     const GET = 'GET';
     const POST = 'POST';
@@ -265,7 +266,7 @@ class Pintlabs_Service_Brewerydb
             'metadata'  => $metadata
         );
 
-        return $this->_request('beers/' . $beerId, $args);
+        return $this->_request('beer/' . $beerId, $args);
     }
 
     /**
@@ -450,7 +451,7 @@ class Pintlabs_Service_Brewerydb
         $this->_lastParsedResponse = null;
 
         // Append the API key to the args passed in the query string
-        $args['apikey'] = $this->_apiKey;
+        $args['key'] = $this->_apiKey;
         $args['format'] = $this->_format;
 
 

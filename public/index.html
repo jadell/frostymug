@@ -2,8 +2,11 @@
 <html>
 <head>
 	<title>BeerMe!</title>
+
 	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-</head>
+	<script type="text/javascript" src="resources/js/beerme.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="resources/css/beerme.css" />
 <body>
 
 <div id="main">
@@ -14,53 +17,17 @@
 
 	<div id="search-results">
 	</div>
+
+	<div class="clear"></div>
 </div>
 
 </body>
 
-<script type="text/javascript">
-$('document').ready(function() {
-
-	var searchResults = $('#search-results');
-	var templates = {};
-
-	var fillTemplate = function (templateName, data) {
-		data = data || {};
-		var tmpl = $($('#'+templateName).html());
-		$.each(data, function (key, value) {
-			tmpl.html(tmpl.html().replace('&lt;%'+key+'%&gt;', value));
-		});
-		return tmpl;
-	};
-
-	$('#search-button').click(function () {
-		var searchTerm = $('#search-term').val();
-		searchResults.empty().append(fillTemplate('wait-template'));
-
-		$.getJSON('/api/beer/search/'+searchTerm, function (results) {
-			searchResults.empty();
-
-			if (results.length < 1) {
-				searchResults.append(fillTemplate('no-results-template'));
-				return;
-			}
-
-			$.each(results, function (idx, result) {
-				searchResults.append(fillTemplate('beer-data-template', {
-					id : result.id,
-					name : result.name
-				}));
-			});
-		});
-	});
-
-});
-</script>
-
 <script type="text/template" id="beer-data-template">
 	<div class="beer-data">
-		<div class="beer-data-id"><%id%></div>
+		<img src="<%icon%>" title="<%description%>"/>
 		<div class="beer-data-name"><%name%></div>
+		<div class="beer-data-brewery-name"><%breweryName%></div>
 	</div>
 </script>
 

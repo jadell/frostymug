@@ -42,7 +42,16 @@ $app['neo4j'] = $app->share(function ($app) {
 });
 
 $app['brewerydb'] = $app->share(function ($app) {
-	return new Pintlabs_Service_Brewerydb(getenv('BREWERYDB_API_KEY'));
+	$apiKey = 'A1029384756B';
+	// return new Pintlabs_Service_Brewerydb(getenv('BREWERYDB_API_KEY'));
+	return new Pintlabs_Service_Brewerydb($apiKey);
+});
+
+$app['beerfactory'] = $app->share(function ($app) {
+	return new Beerme\Model\Factory\BeerFactory($app);
+});
+$app['breweryfactory'] = $app->share(function ($app) {
+	return new Beerme\Model\Factory\BreweryFactory($app);
 });
 
 // Register controllers

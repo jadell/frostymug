@@ -7,6 +7,7 @@ use Silex\Application,
 
 class BeerApi
 {
+	protected $beers = array();
 	protected $app;
 
 	/**
@@ -36,14 +37,14 @@ class BeerApi
 	/**
 	 * Return a specific beer
 	 *
-	 * @param integer $beerId
+	 * @param string $beerId
 	 */
 	public function getBeerAction($beerId)
 	{
 		$brewerydb = $this->app['brewerydb'];
 		$results = $brewerydb->getBeer($beerId);
-		$beerData = $results['beers']['beer'];
-		$beer = $this->hydrateBeer($beerData);
+		$beerData = $results['data'];
+		$beer = $this->app['beerfactory']->getBeer($beerData['id'], $beerData);
 		return new JsonResponse($beer->toApi());
 	}
 
@@ -57,30 +58,15 @@ class BeerApi
 		$brewerydb = $this->app['brewerydb'];
 		$results = $brewerydb->search($searchTerm, 'beer');
 
-		if (!isset($results['results']['result'])) {
-			$results['results']['result'] = array();
-		} else if (isset($results['results']['result']['id'])) {
-			$results['results']['result'] = array($results['results']['result']);
+		if (!isset($results['data'])) {
+			$results['data'] = array();
 		}
 
 		$beers = array();
-		foreach ($results['results']['result'] as $beerData) {
-			$beers[] = $this->hydrateBeer($beerData)->toApi();
+		foreach ($results['data'] as $beerData) {
+			$beers[] = $this->app['beerfactory']->getBeer($beerData['id'], $beerData)->toApi();
 		}
 
 		return new JsonResponse($beers);
-	}
-
-	/**
-	 * Turn an array of beer data into a beer object
-	 *
-	 * @param array $beerData
-	 * @return Beer
-	 */
-	public function hydrateBeer($beerData)
-	{
-		$beer = new Beer($this->app);
-		return $beer->setId($beerData['id'])
-		            ->setName($beerData['name']);
 	}
 }
