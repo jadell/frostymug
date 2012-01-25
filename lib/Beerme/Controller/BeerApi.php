@@ -56,7 +56,10 @@ class BeerApi
 	{
 		$brewerydb = $this->app['brewerydb'];
 		$results = $brewerydb->search($searchTerm, 'beer');
-		if (isset($results['results']['result']['id'])) {
+
+		if (!isset($results['results']['result'])) {
+			$results['results']['result'] = array();
+		} else if (isset($results['results']['result']['id'])) {
 			$results['results']['result'] = array($results['results']['result']);
 		}
 
