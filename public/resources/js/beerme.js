@@ -9,7 +9,7 @@ $('document').ready(function() {
 		data = data || {};
 		var tmpl = $('#'+templateName).html();
 		$.each(data, function (key, value) {
-			tmpl = tmpl.replace('<%'+key+'%>', value);
+			tmpl = tmpl.replace(new RegExp('<%'+key+'%>', 'g'), value);
 		});
 		return $(tmpl);
 	};
@@ -37,6 +37,12 @@ $('document').ready(function() {
 				,	icon : beer.icon || '/resources/images/beer-default.png'
 				});
 				searchResults.append(filled);
+				$('img', filled).load(function () {
+					$(this).wrap(function () {
+						return '<span class="image-wrap '+ ($(this).attr('class') || '') + '" style="background:url(' + $(this).attr('src') + ');" />';
+					});
+					$(this).css("opacity", "0");
+				});
 			});
 		});
 	});
