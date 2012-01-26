@@ -34,7 +34,14 @@
 
 <script type="text/template" id="beer-data-template">
 	<div class="beer-data">
-		<img src="<%icon%>" title="<%description%>" alt="<%name%> by <%breweryName%>"/>
+		<img src="<%icon%>" class="label-image" title="<%description%>" alt="<%name%> by <%breweryName%>"/>
+		<div class="beer-rating-form">
+			Rating: <select>
+				<option>0</option><option>1</option><option>2</option><option>3</option>
+				<option>4</option><option>5</option><option>6</option><option>7</option>
+				<option>8</option><option>9</option><option>10</option>
+			</select>
+		</div>
 		<div class="beer-data-name"><%name%></div>
 		<div class="beer-data-brewery-name"><%breweryName%></div>
 	</div>

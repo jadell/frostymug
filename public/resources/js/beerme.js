@@ -37,7 +37,7 @@ $('document').ready(function() {
 				,	icon : beer.icon || '/resources/images/beer-default.png'
 				});
 				searchResults.append(filled);
-				$('img', filled).load(function () {
+				$('img.label-image', filled).load(function () {
 					$(this).wrap(function () {
 						return '<span class="image-wrap '+ ($(this).attr('class') || '') + '" style="background:url(' + $(this).attr('src') + ');" />';
 					});
