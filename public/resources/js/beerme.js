@@ -31,7 +31,7 @@ $('document').ready(function() {
 				,	description : beer.description || ''
 				,	breweryName : beer.brewery.name
 				,	breweryId : beer.brewery.id
-				,	icon : beer.icon || '/resources/images/beer-default.jpg'
+				,	icon : beer.icon || '/resources/images/beer-default.png'
 				});
 				searchResults.append(filled);
 			});
