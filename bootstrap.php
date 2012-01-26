@@ -56,4 +56,5 @@ $app['breweryfactory'] = $app->share(function ($app) {
 
 // Register controllers
 $app['webui'] = new Beerme\Controller\WebUi($app);
-$app['beeraip'] = new Beerme\Controller\BeerApi($app);
+$app['beerapi'] = new Beerme\Controller\BeerApi($app);
+$app['userapi'] = new Beerme\Controller\UserApi($app);

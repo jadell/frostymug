@@ -10,12 +10,21 @@
 <body>
 
 <div id="main">
-	<div id="search-form">
-		<label for="search-term"><input type="text" id="search-term" /></label>
-		<button id="search-button">Beer Me!</button>
+	<div id="head">
+		<div id="login-form">
+			<label for="login-email">Email<input type="text" id="login-email" /></label>
+			<a href="#" class="button" id="login-button">Login</a>
+		</div>
+
+		<div id="search-form">
+			<input type="text" id="search-term" />
+			<a href="#" class="button" id="search-button">Search</a>
+		</div>
 	</div>
 
-	<div id="search-results">
+	<div id="content">
+		<div id="search-results">
+		</div>
 	</div>
 
 	<div class="clear"></div>
@@ -32,11 +41,22 @@
 </script>
 
 <script type="text/template" id="no-results-template">
-	<div class="no-results">No results matched your search.</div>
+	<div class="result no-results">No results matched your search.</div>
+</script>
+
+<script type="text/template" id="bad-login-template">
+	<div class="result bad-login">Bad login.</div>
 </script>
 
 <script type="text/template" id="wait-template">
 	<div class="wait">Please wait...</div>
+</script>
+
+<script type="text/template" id="logged-in-template">
+	<div class="logged-in">
+		<%email%>
+		<a href="#" class="button" id="logout-button">Logout</a>
+	</div>
 </script>
 
 </html>
