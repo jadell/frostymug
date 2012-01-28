@@ -1,26 +1,19 @@
 <?php
 namespace Beerme\Controller;
 
+use Silex\Application;
+
 class WebUi
 {
-	protected $app;
-
 	/**
-	 * Bootstrap the Web front-end
+	 * Register this controller with the application
 	 *
-	 * @param \Silex\Application
+	 * @param Application
 	 */
-	public function __construct(\Silex\Application $app)
+	public static function register(Application $app)
 	{
-		$this->app = $app;
-		$this->app->get('/', array($this, 'indexAction'));
-	}
-
-	/**
-	 * Index page
-	 */
-	public function indexAction()
-	{
-		return $this->app->redirect('/index.html');
+		$app->get('/', function () use ($app) {
+			return $app->redirect('/index.html');
+		});
 	}
 }

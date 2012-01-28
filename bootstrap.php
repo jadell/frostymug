@@ -47,14 +47,7 @@ $app['brewerydb'] = $app->share(function ($app) {
 	return new Pintlabs_Service_Brewerydb($apiKey);
 });
 
-$app['beerfactory'] = $app->share(function ($app) {
-	return new Beerme\Model\Factory\BeerFactory($app);
-});
-$app['breweryfactory'] = $app->share(function ($app) {
-	return new Beerme\Model\Factory\BreweryFactory($app);
-});
-
 // Register controllers
-$app['webui'] = new Beerme\Controller\WebUi($app);
-$app['beerapi'] = new Beerme\Controller\BeerApi($app);
-$app['userapi'] = new Beerme\Controller\UserApi($app);
+Beerme\Controller\WebUi::register($app);
+Beerme\Controller\BeerApi::register($app);
+Beerme\Controller\UserApi::register($app);

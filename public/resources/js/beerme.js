@@ -36,13 +36,13 @@ $('document').ready(function() {
 				,	breweryId : beer.brewery.id
 				,	icon : beer.icon || '/resources/images/beer-default.png'
 				});
-				searchResults.append(filled);
 				$('img.label-image', filled).load(function () {
 					$(this).wrap(function () {
 						return '<span class="image-wrap '+ ($(this).attr('class') || '') + '" style="background:url(' + $(this).attr('src') + ');" />';
 					});
 					$(this).css("opacity", "0");
 				});
+				searchResults.append(filled);
 			});
 		});
 	});

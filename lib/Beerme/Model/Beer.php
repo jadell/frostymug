@@ -2,7 +2,6 @@
 namespace Beerme\Model;
 
 use Silex\Application,
-    Beerme\Model\Factory\BreweryFactory,
     Beerme\Model\Brewery;
 
 class Beer
@@ -149,9 +148,11 @@ class Beer
 			$this->setDescription($properties['description']);
 		}
 
-		if (isset($properties['breweries']) && count($properties['breweries']) > 0) {
+		if (isset($properties['brewery'])) {
+			$this->setBrewery($properties['brewery']);
+		} else if (isset($properties['breweries']) && count($properties['breweries']) > 0) {
 			$breweryProperties = $properties['breweries'][0];
-			$this->setBrewery($this->app['breweryfactory']
+			$this->setBrewery($this->app['beerapi']
 			    ->getBrewery($breweryProperties['id'], $breweryProperties));
 		}
 
