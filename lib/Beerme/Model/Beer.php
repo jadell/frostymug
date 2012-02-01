@@ -1,27 +1,26 @@
 <?php
 namespace Beerme\Model;
 
-use Silex\Application,
+use Everyman\Neo4j\Node,
+    Beerme\BeerStore,
     Beerme\Model\Brewery;
 
 class Beer
 {
-
-	protected $app;
-	protected $id;
-	protected $name;
-	protected $description;
-	protected $breweryId;
-	protected $brewery;
+	protected $node;
+	protected $beerStore;
+	protected $brewery = false;
 
 	/**
-	 * Construct a beer
+	 * Create the beer
 	 *
-	 * @param Application
+	 * @param Node $node
+	 * @param BeerStore $beerStore
 	 */
-	public function __construct(Application $app)
+	public function __construct(Node $node, BeerStore $beerStore)
 	{
-		$this->app = $app;
+		$this->node = $node;
+		$this->beerStore = $beerStore;
 	}
 
 	/**
@@ -52,6 +51,10 @@ class Beer
 	 */
 	public function getBrewery()
 	{
+		if ($this->brewery === false) {
+			$this->brewery = $this->beerStore->getBreweryForBeer($this);
+		}
+
 		return $this->brewery;
 	}
 
@@ -62,7 +65,7 @@ class Beer
 	 */
 	public function getDescription()
 	{
-		return $this->description;
+		return $this->node->getProperty('description');
 	}
 
 	/**
@@ -72,7 +75,7 @@ class Beer
 	 */
 	public function getId()
 	{
-		return $this->id;
+		return $this->node->getProperty('id');
 	}
 
 	/**
@@ -82,80 +85,16 @@ class Beer
 	 */
 	public function getName()
 	{
-		return $this->name;
+		return $this->node->getProperty('name');
 	}
 
 	/**
-	 * Set the brewery
+	 * Return the storage node
 	 *
-	 * @param Brewery $brewery
-	 * @return Beer
+	 * @return Node
 	 */
-	public function setBrewery(Brewery $brewery=null)
+	public function getNode()
 	{
-		$this->brewery = $brewery;
-		return $this;
-	}
-
-	/**
-	 * Set the description
-	 *
-	 * @param string $description
-	 * @return Beer
-	 */
-	public function setDescription($description)
-	{
-		$this->description = (string)$description;
-		return $this;
-	}
-
-	/**
-	 * Set the id
-	 *
-	 * @param string $id
-	 * @return Beer
-	 */
-	public function setId($id)
-	{
-		$this->id = (string)$id;
-		return $this;
-	}
-
-	/**
-	 * Set the name
-	 *
-	 * @param string $name
-	 * @return Beer
-	 */
-	public function setName($name)
-	{
-		$this->name = (string)$name;
-		return $this;
-	}
-
-	/**
-	 * Set properties on the beer
-	 *
-	 * @param array $properties
-	 * @return Beer
-	 */
-	public function setProperties($properties)
-	{
-		if (isset($properties['name'])) {
-			$this->setName($properties['name']);
-		}
-		if (isset($properties['description'])) {
-			$this->setDescription($properties['description']);
-		}
-
-		if (isset($properties['brewery'])) {
-			$this->setBrewery($properties['brewery']);
-		} else if (isset($properties['breweries']) && count($properties['breweries']) > 0) {
-			$breweryProperties = $properties['breweries'][0];
-			$this->setBrewery($this->app['beerapi']
-			    ->getBrewery($breweryProperties['id'], $breweryProperties));
-		}
-
-		return $this;
+		return $this->node;
 	}
 }

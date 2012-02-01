@@ -3,11 +3,14 @@ namespace Beerme\Controller;
 
 use Silex\Application,
     Beerme\JsonResponse,
+    Beerme\BeerStore,
     Beerme\Model\Brewery,
     Beerme\Model\Beer;
 
 class BeerApi
 {
+	protected $beerStore;
+
 	/**
 	 * Register this controller with the application
 	 *
@@ -15,37 +18,38 @@ class BeerApi
 	 */
 	public static function register(Application $app)
 	{
-		$app['beerapi'] = $app->share(function($app) {
-			return new BeerApi($app);
+		$app['beerStore'] = $app->share(function($app) {
+			return new BeerStore($app['neo4j'], $app['brewerydb']);
+		});
+
+		$app['beerApi'] = $app->share(function($app) {
+			return new BeerApi($app['beerStore']);
 		});
 
 		$app->get('/api/beer/{beerId}', function($beerId) use ($app) {
-			return new JsonResponse($app['beerapi']
-				->findBeer($beerId)
-				->toApi()
-			);
+			$beer = $app['beerApi']->getBeer($beerId);
+			if ($beer) {
+				return new JsonResponse($beer->toApi());
+			}
+			return new JsonResponse((object)array(), 404);
 		});
 
-		$app->get('/api/beer/search/{searchTerm}', function($searchTerm) use ($app) {
-			return new JsonResponse(array_map(function($beer) {
-				return $beer->toApi();
-			},
-			$app['beerapi']->searchBeers($searchTerm)));
-		});
+		// $app->get('/api/beer/search/{searchTerm}', function($searchTerm) use ($app) {
+		// 	return new JsonResponse(array_map(function($beer) {
+		// 		return $beer->toApi();
+		// 	},
+		// 	$app['beerapi']->searchBeers($searchTerm)));
+		// });
 	}
-
-	protected $breweries = array();
-	protected $beers = array();
-	protected $app;
 
 	/**
 	 * Bootstrap the Beer endpoints
 	 *
 	 * @param Application
 	 */
-	public function __construct(Application $app)
+	public function __construct(BeerStore $beerStore)
 	{
-		$this->app = $app;
+		$this->beerStore = $beerStore;
 	}
 
 	/**
@@ -54,13 +58,9 @@ class BeerApi
 	 * @param string $beerId
 	 * @return Beer
 	 */
-	public function findBeer($beerId)
+	public function getBeer($beerId)
 	{
-		$brewerydb = $this->app['brewerydb'];
-		$results = $brewerydb->getBeer($beerId);
-		$beerData = $results['data'];
-		$beer = $this->getBeer($beerData['id'], $beerData);
-		return $beer;
+		return $this->beerStore->getBeer($beerId);
 	}
 
 	/**
@@ -69,69 +69,26 @@ class BeerApi
 	 * @param string $searchTerm
 	 * @return array of Beer
 	 */
-	public function searchBeers($searchTerm)
-	{
-		$brewerydb = $this->app['brewerydb'];
-		$results = $brewerydb->search($searchTerm, 'beer');
+	// public function searchBeers($searchTerm)
+	// {
+	// 	$brewerydb = $this->app['brewerydb'];
+	// 	$results = $brewerydb->search($searchTerm, 'beer');
 
-		if (!isset($results['data'])) {
-			$results['data'] = array();
-		}
+	// 	if (!isset($results['data'])) {
+	// 		$results['data'] = array();
+	// 	}
 
-		$beers = array();
-		foreach ($results['data'] as $beerData) {
-			$beerData['brewery'] = $this->getBrewery('XYZ123', array(
-				'name' => 'Some Brewey Co.',
-			));
-			$beers[] = $this->getBeer($beerData['id'], $beerData);
-		}
+	// 	$beers = array();
+	// 	foreach ($results['data'] as $beerData) {
+	// 		if (isset($beerData['breweries'][0])) {
+	// 			$beerData['brewery'] = $this->getBrewery(
+	// 				$beerData['breweries'][0]['id'],
+	// 				$beerData['breweries'][0]
+	// 			);
+	// 		}
+	// 		$beers[] = $this->getBeer($beerData['id'], $beerData);
+	// 	}
 
-		return $beers;
-	}
-
-	/**
-	 * Get a beer from the beer cache or generate one and put it in the cache
-	 *
-	 * If properties are given, set them on the Beer
-	 *
-	 * @param integer $id
-	 * @param array   $properties
-	 * @return Beer
-	 */
-	public function getBeer($id=null, $properties=array())
-	{
-		if (!$id) {
-			$beer = new Beer($this->app);
-		} else if (!isset($this->beers[$id])) {
-			$beer = new Beer($this->app);
-			$this->beers[$id] = $beer->setId($id);
-		} else {
-			$beer = $this->beers[$id];
-		}
-
-		return $beer->setProperties($properties);
-	}
-
-	/**
-	 * Get a brewery from the brewery cache or generate one and put it in the cache
-	 *
-	 * If properties are given, set them on the Brewery
-	 *
-	 * @param integer $id
-	 * @param array   $properties
-	 * @return Brewery
-	 */
-	public function getBrewery($id=null, $properties=array())
-	{
-		if (!$id) {
-			$brewery = new Brewery($this->app);
-		} else if (!isset($this->breweries[$id])) {
-			$brewery = new Brewery($this->app);
-			$this->breweries[$id] = $brewery->setId($id);
-		} else {
-			$brewery = $this->breweries[$id];
-		}
-
-		return $brewery->setProperties($properties);
-	}
+	// 	return $beers;
+	// }
 }

@@ -51,3 +51,12 @@ $app['brewerydb'] = $app->share(function ($app) {
 Beerme\Controller\WebUi::register($app);
 Beerme\Controller\BeerApi::register($app);
 Beerme\Controller\UserApi::register($app);
+
+function dump()
+{
+	print "<pre>";
+	foreach (func_get_args() as $arg) {
+		print_r($arg);
+	}
+	print "</pre>";
+}

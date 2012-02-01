@@ -1,23 +1,20 @@
 <?php
 namespace Beerme\Model;
 
-use Silex\Application;
+use Everyman\Neo4j\Node;
 
 class Brewery
 {
-
-	protected $app;
-	protected $id;
-	protected $name;
+	protected $node;
 
 	/**
-	 * Construct a brewery
+	 * Create the brewery
 	 *
-	 * @param Application
+	 * @param Node $node
 	 */
-	public function __construct(Application $app)
+	public function __construct(Node $node)
 	{
-		$this->app = $app;
+		$this->node = $node;
 	}
 
 	/**
@@ -28,9 +25,20 @@ class Brewery
 	public function toApi()
 	{
 		return array(
-			'id' => $this->id,
-			'name' => $this->name,
+			'id' => $this->getId(),
+			'name' => $this->getName(),
+			'icon' => $this->getIconUrl(),
 		);
+	}
+
+	/**
+	 * Return the icon url
+	 *
+	 * @return string
+	 */
+	public function getIconUrl()
+	{
+		return $this->node->getProperty('icon');
 	}
 
 	/**
@@ -40,7 +48,7 @@ class Brewery
 	 */
 	public function getId()
 	{
-		return $this->id;
+		return $this->node->getProperty('id');
 	}
 
 	/**
@@ -50,45 +58,16 @@ class Brewery
 	 */
 	public function getName()
 	{
-		return $this->name;
+		return $this->node->getProperty('name');
 	}
 
 	/**
-	 * Set the id
+	 * Return the storage node
 	 *
-	 * @param string $id
-	 * @return Brewery
+	 * @return Node
 	 */
-	public function setId($id)
+	public function getNode()
 	{
-		$this->id = (string)$id;
-		return $this;
-	}
-
-	/**
-	 * Set the name
-	 *
-	 * @param string $name
-	 * @return Brewery
-	 */
-	public function setName($name)
-	{
-		$this->name = (string)$name;
-		return $this;
-	}
-
-	/**
-	 * Set properties on the brewery
-	 *
-	 * @param array $properties
-	 * @return Brewery
-	 */
-	public function setProperties($properties)
-	{
-		if (isset($properties['name'])) {
-			$this->setName($properties['name']);
-		}
-
-		return $this;
+		return $this->node;
 	}
 }
