@@ -34,7 +34,7 @@ $('document').ready(function() {
 				,	description : beer.description || ''
 				,	breweryName : beer.brewery.name
 				,	breweryId : beer.brewery.id
-				,	icon : beer.icon || '/resources/images/beer-default.png'
+				,	icon : beer.brewery.icon || '/resources/images/beer-default.png'
 				});
 				$('img.label-image', filled).load(function () {
 					$(this).wrap(function () {
