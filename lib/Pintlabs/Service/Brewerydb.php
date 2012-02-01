@@ -408,7 +408,8 @@ class Pintlabs_Service_Brewerydb
         $args = array(
             'q'        => $query,
             'page'     => $page,
-            'metadata' => $metadata
+            'metadata' => $metadata,
+            'withBreweries' => 'Y'
         );
 
         if ($type != '') {

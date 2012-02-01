@@ -106,7 +106,11 @@ class BeerStore
 
 		$beers = array();
 		foreach ($results['data'] as $beerData) {
-			$beers[] = $this->getBeer($beerData['id']);
+			$beer = $this->findBeerInGraph($beerData['id']);
+			if (!$beer) {
+				$beer = $this->createBeerFromBreweryDbRaw($beerData);
+			}
+			$beers[] = $beer;
 		}
 
 		return $beers;
@@ -117,24 +121,33 @@ class BeerStore
 	//////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Look up beer in BreweryDb
+	 * Create a beer from the BreweryDb raw data
 	 *
-	 * @param string $id
+	 * This is mainly used so we can create beers from search
+	 * without having to make another 1 or more round-trips to
+	 * BreweryDb
+	 *
+	 * @param array $beerData
 	 * @return Beer
 	 */
-	protected function findBeerInBreweryDb($id)
+	protected function createBeerFromBreweryDbRaw($beerData)
 	{
-		$beerResults = $this->breweryDb->getBeer($id);
-		if (!isset($beerResults['data'])) {
-			return null;
-		}
-		$beerData = $beerResults['data'];
+		$id = $beerData['id'];
 
-		$breweryResults = $this->breweryDb->getBreweriesForBeer($id);
-		if (!isset($breweryResults['data'][0])) {
-			return null;
+		if (isset($beerData['breweries'][0])) {
+			$breweryData = $beerData['breweries'][0];
+			$breweryId = $breweryData['id'];
+			$brewery = $this->findBreweryInGraph($breweryId);
+			if (!$brewery) {
+				$brewery = $this->createBreweryFromBreweryDbRaw($breweryData);
+			}
 		} else {
-			$brewery = $this->getBrewery($breweryResults['data'][0]['id']);
+			$breweryResults = $this->breweryDb->getBreweriesForBeer($id);
+			if (!isset($breweryResults['data'][0])) {
+				return null;
+			} else {
+				$brewery = $this->getBrewery($breweryResults['data'][0]['id']);
+			}
 		}
 
 		$properties = array(
@@ -162,6 +175,58 @@ class BeerStore
 	}
 
 	/**
+	 * Create a brewery from the BreweryDb raw data
+	 *
+	 * This is mainly used so we can create breweries from search
+	 * without having to make another 1 or more round-trips to
+	 * BreweryDb
+	 *
+	 * @param array $breweryData
+	 * @return Brewery
+	 */
+	protected function createBreweryFromBreweryDbRaw($breweryData)
+	{
+		$properties = array(
+			'id' => $breweryData['id'],
+			'name' => $breweryData['name'],
+			'icon' => isset($breweryData['images']['icon']) ? $breweryData['images']['icon'] : null,
+		);
+
+		$client = $this->neo4j;
+		$index = $this->getBreweryIndex();
+		$ref = $this->getBreweryReference();
+
+		$client->startBatch();
+		$node = $client->makeNode()
+			->setProperties($properties)
+			->save()
+			->relateTo($ref, 'BREWERY')
+				->save()
+				->getStartNode();
+		$index->add($node, 'id', $node->getProperty('id'));
+		$client->commitBatch();
+
+		return new Brewery($node);
+	}
+
+	/**
+	 * Look up beer in BreweryDb
+	 *
+	 * @param string $id
+	 * @return Beer
+	 */
+	protected function findBeerInBreweryDb($id)
+	{
+		$beerResults = $this->breweryDb->getBeer($id);
+		if (!isset($beerResults['data'])) {
+			return null;
+		}
+		$beerData = $beerResults['data'];
+
+		return $this->createBeerFromBreweryDbRaw($beerData);
+	}
+
+	/**
 	 * Look up beer in Neo4j
 	 *
 	 * @param string $id
@@ -181,6 +246,7 @@ class BeerStore
 	 * Look up brewery in BreweryDb
 	 *
 	 * @param string $id
+	 * @param string $id
 	 * @return Brewery
 	 */
 	protected function findBreweryInBreweryDb($id)
@@ -190,27 +256,7 @@ class BeerStore
 			return null;
 		}
 
-		$properties = array(
-			'id' => $results['data']['id'],
-			'name' => $results['data']['name'],
-			'icon' => isset($results['data']['images']['icon']) ? $results['data']['images']['icon'] : null,
-		);
-
-		$client = $this->neo4j;
-		$index = $this->getBreweryIndex();
-		$ref = $this->getBreweryReference();
-
-		$client->startBatch();
-		$node = $client->makeNode()
-			->setProperties($properties)
-			->save()
-			->relateTo($ref, 'BREWERY')
-				->save()
-				->getStartNode();
-		$index->add($node, 'id', $node->getProperty('id'));
-		$client->commitBatch();
-
-		return new Brewery($node);
+		return $this->createBreweryFromBreweryDbRaw($results['data']);
 	}
 
 	/**
