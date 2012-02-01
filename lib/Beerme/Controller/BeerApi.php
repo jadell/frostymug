@@ -34,12 +34,12 @@ class BeerApi
 			return new JsonResponse((object)array(), 404);
 		});
 
-		// $app->get('/api/beer/search/{searchTerm}', function($searchTerm) use ($app) {
-		// 	return new JsonResponse(array_map(function($beer) {
-		// 		return $beer->toApi();
-		// 	},
-		// 	$app['beerapi']->searchBeers($searchTerm)));
-		// });
+		$app->get('/api/beer/search/{searchTerm}', function($searchTerm) use ($app) {
+			return new JsonResponse(array_map(function($beer) {
+				return $beer->toApi();
+			},
+			$app['beerApi']->searchBeers($searchTerm)));
+		});
 	}
 
 	/**
@@ -69,26 +69,8 @@ class BeerApi
 	 * @param string $searchTerm
 	 * @return array of Beer
 	 */
-	// public function searchBeers($searchTerm)
-	// {
-	// 	$brewerydb = $this->app['brewerydb'];
-	// 	$results = $brewerydb->search($searchTerm, 'beer');
-
-	// 	if (!isset($results['data'])) {
-	// 		$results['data'] = array();
-	// 	}
-
-	// 	$beers = array();
-	// 	foreach ($results['data'] as $beerData) {
-	// 		if (isset($beerData['breweries'][0])) {
-	// 			$beerData['brewery'] = $this->getBrewery(
-	// 				$beerData['breweries'][0]['id'],
-	// 				$beerData['breweries'][0]
-	// 			);
-	// 		}
-	// 		$beers[] = $this->getBeer($beerData['id'], $beerData);
-	// 	}
-
-	// 	return $beers;
-	// }
+	public function searchBeers($searchTerm)
+	{
+		return $this->beerStore->searchBeers($searchTerm);
+	}
 }

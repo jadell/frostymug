@@ -96,10 +96,9 @@ class BeerStore
 	 * @param string $searchTerm
 	 * @return array of Beer
 	 */
-/*	public function searchBeers($searchTerm)
+	public function searchBeers($searchTerm)
 	{
-		$brewerydb = $this->breweryDb;
-		$results = $brewerydb->search($searchTerm, 'beer');
+		$results = $this->breweryDb->search($searchTerm, 'beer');
 
 		if (!isset($results['data'])) {
 			$results['data'] = array();
@@ -107,17 +106,11 @@ class BeerStore
 
 		$beers = array();
 		foreach ($results['data'] as $beerData) {
-			if (isset($beerData['breweries'][0])) {
-				$brewery = new Brewery();
-				$beerData['brewery'] = $brewery->setProperties($beerData['breweries'][0]);;
-			}
-
-			$beer = new Beer();
-			$beers[] = $beer->setProperties($beerData);
+			$beers[] = $this->getBeer($beerData['id']);
 		}
 
 		return $beers;
-	}*/
+	}
 
 	////////////////////////////////////////////////////////////////////////////////
 	// PROTECTED //////////////////////////////////////////////////////////////////
@@ -147,7 +140,7 @@ class BeerStore
 		$properties = array(
 			'id' => $beerData['id'],
 			'name' => $beerData['name'],
-			'description' => $beerData['description'],
+			'description' => isset($beerData['description']) ? $beerData['description'] : null,
 		);
 
 		$client = $this->neo4j;

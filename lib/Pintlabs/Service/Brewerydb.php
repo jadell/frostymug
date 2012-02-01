@@ -259,7 +259,7 @@ class Pintlabs_Service_Brewerydb
      * @return array from the request
      *
      */
-    public function getBeer($beerId = 1, $metadata = true)
+	public function getBeer($beerId = 1, $metadata = true)
     {
 
         $args = array(
@@ -395,7 +395,7 @@ class Pintlabs_Service_Brewerydb
      * @return array from the request
      *
      */
-    public function search($query, $type = '', $metadata = true, $withBreweries=true, $page = 1)
+    public function search($query, $type = '', $metadata = true, $page = 1)
     {
 
         $type = strtolower($type);
@@ -413,9 +413,6 @@ class Pintlabs_Service_Brewerydb
 
         if ($type != '') {
             $args['type'] = $type;
-        }
-        if ($withBreweries) {
-            $args['withBreweries'] = 'Y';
         }
 
         return $this->_request('search/', $args);
