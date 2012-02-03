@@ -11,12 +11,11 @@
 
 <div id="main">
 	<div id="head">
-<!--
-		<div id="login-form">
-			<label for="login-email">Email<input type="text" id="login-email" /></label>
-			<a href="#" class="button" id="login-button">Login</a>
-		</div>
--->
+		<form action="/login" method="POST">
+			<input type="hidden" name="openid_identifier" value="https://www.google.com/accounts/o8/id" />
+			<button>Login with Google</button>
+		</form>
+
 		<div id="search-form">
 			<input type="text" id="search-term" />
 			<a href="#" class="button" id="search-button">Search</a>

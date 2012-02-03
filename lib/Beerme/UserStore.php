@@ -71,7 +71,7 @@ class UserStore
 			return null;
 		}
 
-		return = new User($userNode);
+		return new User($userNode);
 	}
 
 	////////////////////////////////////////////////////////////////////////////////
