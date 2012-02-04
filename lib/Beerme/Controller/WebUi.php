@@ -4,8 +4,6 @@ namespace Beerme\Controller;
 use Silex\Application,
     Silex\Provider\SessionServiceProvider as Session,
 	Symfony\Component\HttpFoundation\Request,
-    Beerme\JsonResponse,
-    Beerme\Model\User,
     Beerme\UserStore,
 	LightOpenID;
 
