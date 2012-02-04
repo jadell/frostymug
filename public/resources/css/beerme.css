@@ -67,7 +67,7 @@ a.powered-by.blue {
 }
 
 .beer-data {
-	border: 1px solid #ccc;
+	border: 1px solid #b8a270;
 	border-radius: 15px;
 		-moz-border-radius: 15px;
 		-webkit-border-radius: 15px;
@@ -128,26 +128,29 @@ a.powered-by.blue {
 }
 
 div.star-rating {
+	background: #b8a270;
 	border: 1px solid #ccc;
 	border-radius: 15px;
 		-moz-border-radius: 15px;
 		-webkit-border-radius: 15px;
+	margin: auto;
 	padding: 2px;
-	width: 140px;
+	text-align: center;
+	width: 122px;
 }
 .stars div a {
 	background: transparent url('/resources/images/star_sprite.png') 0 0 no-repeat;
 	display: inline-block;
-	height: 28px;
+	height: 24px;
 	overflow: hidden;
 	text-indent: -999em;
-	width: 14px;
+	width: 12px;
 }
 .stars a.rating-right {
-	background-position: 0 -28px;
+	background-position: 0 -24px;
 	padding: 0px;
 }
-.stars a.rating-over { background-position: 0 -112px; }
-.stars a.rating-over.rating-right { background-position: 0 -140px; }
-.stars a.rating { background-position: 0 -112px; }
-.stars a.rating.rating-right { background-position: 0 -140px; }
+.stars a.rating-over { background-position: 0 -96px; }
+.stars a.rating-over.rating-right { background-position: 0 -120px; }
+.stars a.rating { background-position: 0 -96px; }
+.stars a.rating.rating-right { background-position: 0 -120px; }
