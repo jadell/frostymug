@@ -31,7 +31,7 @@ class RatingStore
 	public function getRating(User $user, Beer $beer)
 	{
 		$existing = $this->findRatingRelationships($user, $beer);
-		return count($existing) > 0 ? $existing[0]['r']->getProperty('rating') : 0;
+		return count($existing) > 0 ? $existing[0]['r']->getProperty('rating') : null;
 	}
 
 	/**

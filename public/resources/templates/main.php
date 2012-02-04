@@ -55,15 +55,22 @@
 </script>
 
 <script type="text/template" id="beer-rating-template">
-	<div class="beer-rating-form">
+	<form class="beer-rating-form" method="POST">
 		<input type="hidden" class="beer-id" value="<%id%>" />
-		<select>
-			<option>0</option><option>1</option><option>2</option><option>3</option>
-			<option>4</option><option>5</option><option>6</option><option>7</option>
-			<option>8</option><option>9</option><option>10</option>
-		</select>
+		<div class="stars">
+			<label><input class="rating-1"  name="rating" type="radio" value="1" >1</label>
+			<label><input class="rating-2"  name="rating" type="radio" value="2" >2</label>
+			<label><input class="rating-3"  name="rating" type="radio" value="3" >3</label>
+			<label><input class="rating-4"  name="rating" type="radio" value="4" >4</label>
+			<label><input class="rating-5"  name="rating" type="radio" value="5" >5</label>
+			<label><input class="rating-6"  name="rating" type="radio" value="6" >6</label>
+			<label><input class="rating-7"  name="rating" type="radio" value="7" >7</label>
+			<label><input class="rating-8"  name="rating" type="radio" value="8" >8</label>
+			<label><input class="rating-9"  name="rating" type="radio" value="9" >9</label>
+			<label><input class="rating-10" name="rating" type="radio" value="10">10</label>
+		</div>
 		<button>Rate</button>
-	</div>
+	</form>
 </script>
 
 <script type="text/template" id="no-results-template">

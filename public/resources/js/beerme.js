@@ -49,16 +49,13 @@ $('document').ready(function() {
 						var ratingForm = fillTemplate('beer-rating-template', {
 							id : beer.id
 						});
-						$('button', ratingForm).click(function (e) {
-							e.preventDefault();
+						ratingForm.submit(function (e) {
 							$.post('/api/beer/'+beer.id+'/rating/'+loggedInAs, {
-								rating : $('select', ratingForm).val()
-							}, function (result) {
-								console.log(result);
+								rating : $('input:radio:checked', ratingForm).val()
 							});
+							return false;
 						});
-
-						$('select', ratingForm).val(result.rating);
+						$('input:radio[value='+result.rating+']', ratingForm).attr('checked', true);
 						$('.beer-data-name', filled).after(ratingForm);
 					});
 				}
