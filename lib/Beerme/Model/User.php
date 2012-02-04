@@ -39,4 +39,14 @@ class User
 	{
 		return $this->node->getProperty('email');
 	}
+
+	/**
+	 * Return the storage node
+	 *
+	 * @return Node
+	 */
+	public function getNode()
+	{
+		return $this->node;
+	}
 }

@@ -1,8 +1,8 @@
 $('document').ready(function() {
 
-	var loggedInAs = null;
 
 	var searchResults = $('#search-results');
+	var loggedInAs = $('span.logged-in-as').text();
 	var templates = {};
 
 	var fillTemplate = function (templateName, data) {
@@ -43,6 +43,27 @@ $('document').ready(function() {
 					$(this).css("opacity", "0");
 				});
 				searchResults.append(filled);
+
+				if (loggedInAs) {
+					$.getJSON('/api/beer/'+beer.id+'/rating/'+loggedInAs, function (result) {
+						var ratingForm = fillTemplate('beer-rating-template', {
+							id : beer.id
+						});
+						$('button', ratingForm).click(function (e) {
+							e.preventDefault();
+							$.post('/api/beer/'+beer.id+'/rating/'+loggedInAs, {
+								rating : $('select', ratingForm).val()
+							}, function (result) {
+								console.log(result);
+							});
+						});
+
+						$('select', ratingForm).val(result.rating);
+						$('.beer-data-name', filled).after(ratingForm);
+					});
+				}
+
+
 			});
 		});
 	});

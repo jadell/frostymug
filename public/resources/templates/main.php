@@ -11,12 +11,12 @@
 <div id="main">
 	<div id="head">
 		<?php if ($user) : ?>
-			<?php echo $user['email']; ?>
+			<span class="logged-in-as"><?php echo $user['email']; ?></span>
 			<a href="/logout" class="button" id="logout-button">Logout</a>
 		<?php else : ?>
 			<form action="/login" method="POST">
 				<input type="hidden" name="openid_identifier" value="https://www.google.com/accounts/o8/id" />
-				<button>Login with Google</button>
+				<button type="submit">Login with Google</button>
 			</form>
 		<?php endif; ?>
 
@@ -56,11 +56,13 @@
 
 <script type="text/template" id="beer-rating-template">
 	<div class="beer-rating-form">
-		Rating: <select>
+		<input type="hidden" class="beer-id" value="<%id%>" />
+		<select>
 			<option>0</option><option>1</option><option>2</option><option>3</option>
 			<option>4</option><option>5</option><option>6</option><option>7</option>
 			<option>8</option><option>9</option><option>10</option>
 		</select>
+		<button>Rate</button>
 	</div>
 </script>
 
