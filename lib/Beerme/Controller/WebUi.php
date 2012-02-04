@@ -2,7 +2,11 @@
 namespace Beerme\Controller;
 
 use Silex\Application,
+    Silex\Provider\SessionServiceProvider as Session,
 	Symfony\Component\HttpFoundation\Request,
+    Beerme\JsonResponse,
+    Beerme\Model\User,
+    Beerme\UserStore,
 	LightOpenID;
 
 class WebUi
@@ -14,8 +18,15 @@ class WebUi
 	 */
 	public static function register(Application $app)
 	{
+		$app->register(new Session());
+		$app['userStore'] = $app->share(function($app) {
+			return new UserStore($app['neo4j']);
+		});
+
 		$app->get('/', function () use ($app) {
-			return $app->redirect('/index.html');
+			return WebUi::render($app['templateDir'].'/main.php', array(
+				'user' => $app['session']->get('user'),
+			));
 		});
 
 		$app->post('/login', function (Request $request) use ($app) {
@@ -35,15 +46,49 @@ class WebUi
 			try {
 				$openId = new LightOpenID($_SERVER['HTTP_HOST']);
 				if ($openId->mode == 'cancel') {
-					return $app->redirect('/index.html');
+					return $app->redirect('/');
+				} else if (!$openId->validate()) {
+					die('Invalid login');
 				}
 
-				echo 'User '.($openId->validate() ? $openId->identity.' has ' : 'has not ').'logged in.';
-				print_r($openId->getAttributes());
+				$attributes = $openId->getAttributes();
+				if (empty($attributes['contact/email'])) {
+					die('Unable to determine email address');
+				}
+
+				$userStore = $app['userStore'];
+				$user = $userStore->createUser($attributes['contact/email']);
+				if ($user) {
+					$app['session']->start();
+					$app['session']->set('user', $user->toApi());
+					return $app->redirect('/');
+				}
 
 			} catch (ErrorException $e) {
 				die($e->getMessage());
 			}
 		});
+
+		$app->get('/logout', function () use ($app) {
+			$app['session']->set('user', null);
+			$app['session']->invalidate();
+			$app['session']->clear();
+			return $app->redirect('/');
+		});
+	}
+
+	/**
+	 * Render the given template
+	 *
+	 * @param string $templateFile
+	 * @param array $vars
+	 * @return string
+	 */
+	public function render($templateFile, $vars=array())
+	{
+		extract($vars);
+		ob_start();
+		require($templateFile);
+		return ob_get_clean();
 	}
 }

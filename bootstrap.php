@@ -20,6 +20,8 @@ spl_autoload_register(function ($className) {
 $app = new Silex\Application();
 $app['debug'] = true;
 
+$app['templateDir'] = APPLICATION_ROOT.'/public/resources/templates';
+
 $app['baseUrl'] = $app->share(function ($app) {
 	$request = $app['request'];
 	return $request->getScheme().'://'.$request->getHttpHost().$request->getBasePath();
@@ -50,7 +52,6 @@ $app['brewerydb'] = $app->share(function ($app) {
 // Register controllers
 Beerme\Controller\WebUi::register($app);
 Beerme\Controller\BeerApi::register($app);
-Beerme\Controller\UserApi::register($app);
 
 function dump()
 {

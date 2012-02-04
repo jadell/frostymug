@@ -5,16 +5,20 @@
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	<script type="text/javascript" src="resources/js/beerme.js"></script>
-
 	<link rel="stylesheet" type="text/css" href="resources/css/beerme.css" />
 <body>
 
 <div id="main">
 	<div id="head">
-		<form action="/login" method="POST">
-			<input type="hidden" name="openid_identifier" value="https://www.google.com/accounts/o8/id" />
-			<button>Login with Google</button>
-		</form>
+		<?php if ($user) : ?>
+			<?php echo $user['email']; ?>
+			<a href="/logout" class="button" id="logout-button">Logout</a>
+		<?php else : ?>
+			<form action="/login" method="POST">
+				<input type="hidden" name="openid_identifier" value="https://www.google.com/accounts/o8/id" />
+				<button>Login with Google</button>
+			</form>
+		<?php endif; ?>
 
 		<div id="search-form">
 			<input type="text" id="search-term" />
@@ -70,13 +74,6 @@
 
 <script type="text/template" id="wait-template">
 	<div class="wait">Please wait...</div>
-</script>
-
-<script type="text/template" id="logged-in-template">
-	<div class="logged-in">
-		<%email%>
-		<a href="#" class="button" id="logout-button">Logout</a>
-	</div>
 </script>
 
 </html>

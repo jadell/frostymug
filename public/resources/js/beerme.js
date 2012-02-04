@@ -47,48 +47,4 @@ $('document').ready(function() {
 		});
 	});
 
-	$('#login-button').click(function (e) {
-		e.preventDefault();
-		$('.bad-login').remove();
-		var email = $('#login-email').val();
-		if (!email) {
-			return;
-		}
-
-		$.post('/api/user/login', {
-			email: email
-		,	password: 'foo'
-		}, function(response) {
-			if (!response.email) {
-				searchResults.append(fillTemplate('bad-login-template'));
-				return;
-			}
-
-			loggedInAs = response.email;
-			var filled = fillTemplate('logged-in-template', {
-				email: response.email
-			});
-			$('#login-form')
-				.hide()
-				.after(filled)
-				.find('input').val('');
-		}, 'json');
-	});
-
-	$('#logout-button').live('click', function (e) {
-		e.preventDefault();
-		console.log('here');
-		if (!loggedInAs) {
-			return;
-		}
-
-		$.getJSON('/api/user/logout', {
-			email: loggedInAs
-		});
-
-		$('.logged-in').remove();
-		$('#login-form').show();
-		loggedInAs = null
-	});
-
 });
