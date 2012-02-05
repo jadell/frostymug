@@ -100,17 +100,18 @@ $('document').ready(function() {
 				});
 				$('img.label-image', $filled).load(function () {
 					var $this = $(this);
+					if (beer.brewery.icon) {
+						$this.addClass('glossy');
+					}
 					$this.wrap(function () {
 						return '<span class="image-wrap '+ ($this.attr('class') || '') + '" style="background:url(' + $this.attr('src') + ');" />';
 					});
 					$this.css("opacity", "0");
 				});
-				$searchResults.append($filled);
-
-				if (loggedInAs) {
-					var $ratingForm = fillTemplate('beer-rating-template', {
-						id : beer.id
-					});
+				$ratingForm = $('.beer-rating-form', $filled);
+				if (!loggedInAs) {
+					$ratingForm.hide();
+				} else {
 					$ratingForm.submit(function (e) {
 						$.post('/api/beer/'+beer.id+'/rating/'+loggedInAs, {
 							rating : $('input:radio:checked', $ratingForm).val()
@@ -118,9 +119,9 @@ $('document').ready(function() {
 						return false;
 					});
 					$('input:radio[value='+beer.rating+']', $ratingForm).attr('checked', true);
-					$('.beer-data-name', $filled).after($ratingForm);
 					starRating.create($ratingForm);
 				}
+				$searchResults.append($filled);
 			});
 		});
 	});

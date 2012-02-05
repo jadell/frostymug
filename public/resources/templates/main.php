@@ -48,30 +48,29 @@
 
 <script type="text/template" id="beer-data-template">
 	<div class="beer-data">
-		<img src="<%icon%>" class="label-image" title="<%description%>" alt="<%name%> by <%breweryName%>"/>
-		<div class="beer-data-name"><%name%></div>
-		<div class="beer-data-brewery-name"><%breweryName%></div>
-	</div>
-</script>
-
-<script type="text/template" id="beer-rating-template">
-	<form class="beer-rating-form" method="POST">
-		<input type="hidden" class="beer-id" value="<%id%>" />
-		<div class="stars">
-			<label><input name="rating" type="radio" value="0" >Not interested</label>
-			<label><input name="rating" type="radio" value="1" >.5 stars</label>
-			<label><input name="rating" type="radio" value="2" >1 star</label>
-			<label><input name="rating" type="radio" value="3" >1.5 stars</label>
-			<label><input name="rating" type="radio" value="4" >2 stars</label>
-			<label><input name="rating" type="radio" value="5" >2.5 stars</label>
-			<label><input name="rating" type="radio" value="6" >3 stars</label>
-			<label><input name="rating" type="radio" value="7" >3.5 stars</label>
-			<label><input name="rating" type="radio" value="8" >4 stars</label>
-			<label><input name="rating" type="radio" value="9" >4.5 stars</label>
-			<label><input name="rating" type="radio" value="10">5 stars</label>
+		<div class="beer-info" title="<%name%> - <%breweryName%>">
+			<img src="<%icon%>" class="label-image" title="<%description%>" alt="<%name%> by <%breweryName%>"/>
+			<div class="beer-data-name"><%name%></div>
+			<div class="beer-data-brewery-name"><%breweryName%></div>
 		</div>
-		<button>Rate</button>
-	</form>
+		<form class="beer-rating-form" method="POST">
+			<input type="hidden" class="beer-id" value="<%id%>" />
+			<div class="stars">
+				<label><input name="rating" type="radio" value="0" >Not interested</label>
+				<label><input name="rating" type="radio" value="1" >.5 star</label>
+				<label><input name="rating" type="radio" value="2" >1 star</label>
+				<label><input name="rating" type="radio" value="3" >1.5 stars</label>
+				<label><input name="rating" type="radio" value="4" >2 stars</label>
+				<label><input name="rating" type="radio" value="5" >2.5 stars</label>
+				<label><input name="rating" type="radio" value="6" >3 stars</label>
+				<label><input name="rating" type="radio" value="7" >3.5 stars</label>
+				<label><input name="rating" type="radio" value="8" >4 stars</label>
+				<label><input name="rating" type="radio" value="9" >4.5 stars</label>
+				<label><input name="rating" type="radio" value="10">5 stars</label>
+			</div>
+			<button>Rate</button>
+		</form>
+	</div>
 </script>
 
 <script type="text/template" id="no-results-template">

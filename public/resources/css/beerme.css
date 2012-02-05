@@ -19,7 +19,7 @@ body {
 	margin-right: auto;
 	min-height: 95%;
 	padding: 10px;
-	width: 85%;
+	width: 890px;
 
 }
 
@@ -27,7 +27,7 @@ body {
 	margin-left: auto;
 	margin-right: auto;
 	padding: 0 10px;
-	width: 85%;
+	width: 890px;
 }
 
 #search-form {
@@ -71,35 +71,51 @@ a.powered-by.blue {
 	border-radius: 15px;
 		-moz-border-radius: 15px;
 		-webkit-border-radius: 15px;
+	box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
+		-webkit-box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
+		-moz-box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
 	float: left;
-	height: 140px;
-	margin: 5px 5px;
+	height: 92px;
+	margin: 10px 10px;
 	overflow: hidden;
 	padding: 8px;
-	text-align: center;
 	width: 183px;
+}
+
+.beer-info {
+	height: 3.9em;
+	overflow: hidden;
+}
+
+.beer-rating-form {
+	clear: both;
+	padding-top: 4px;
 }
 
 .beer-data-name {
 	font-size: small;
+	font-weight: bold;
+	margin-left: 54px;
+	margin-top: 1px;
 }
 
 .beer-data-brewery-name {
 	font-size: xx-small;
+	margin-left: 54px;
 }
 
 .beer-data img {
 	border-radius: 15px;
 		-moz-border-radius: 15px;
 		-webkit-border-radius: 15px;
-	height: 64px;
-	width: 64px;
+	height: 48px;
+	width: 48px;
 }
 
 .beer-data .image-wrap {
 	background-position: center;
 	background-repeat: no-repeat;
-	background-size: 64px 64px;
+	background-size: 48px 48px;
 	border-radius: 15px;
 		-moz-border-radius: 15px;
 		-webkit-border-radius: 15px;
@@ -107,12 +123,13 @@ a.powered-by.blue {
 		-webkit-box-shadow: inset 0 -1px 0 rgba(128,128,128,.5);
 		-moz-box-shadow: inset 0 -1px 0 rgba(128,128,128,.5);
 	display: inline-block;
-	height: 64px;
+	float: left;
+	height: 48px;
 	position: relative;
-	width: 64px;
+	width: 48px;
 }
 
-.beer-data .image-wrap:after {
+.beer-data .image-wrap.glossy:after {
 	background: linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,.1) 100%);
 	background: -moz-linear-gradient(top, rgba(255,255,255,0.7) 0%, rgba(255,255,255,.1) 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.7)), color-stop(100%,rgba(255,255,255,.1)));
