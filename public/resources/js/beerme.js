@@ -114,7 +114,7 @@ $('document').ready(function() {
 				} else {
 					$ratingForm.submit(function (e) {
 						$.post('/api/beer/'+beer.id+'/rating/'+loggedInAs, {
-							rating : $('input:radio:checked', $ratingForm).val()
+							rating : $('input:radio:checked', $(this)).val()
 						});
 						return false;
 					});
