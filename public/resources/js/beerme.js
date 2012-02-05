@@ -21,10 +21,17 @@ $('document').ready(function() {
 				var $list = $('<div class="star-rating"></div>');
 				$(this).find('input:radio').each(function (i) {
 					var rating = $(this).val();
+					var title = $(this).parent().text();
 					var $item = $('<a href="#"></a>')
-						.attr('title', rating)
-						.text(rating)
-						.addClass(i % 2 == 1 ? 'rating-right' : '');
+						.attr('title', title)
+						.text(rating);
+					// .5 - 5 stars
+					if (rating > 0) {
+							$item.addClass(i % 2 == 0 ? 'rating-right' : '');
+					// 0 = not interested
+					} else {
+						$item.addClass('rating-none');
+					}
 					starRating.addHandlers($item, $form);
 					$list.append($item);
 					if ($(this).is(':checked')) {
@@ -41,6 +48,7 @@ $('document').ready(function() {
 			var $item = $(item);
 			var $form = $(form);
 			$item.click(function (e) {
+				e.preventDefault();
 				var $star = $(this);
 				$star.addClass('rating-current')
 					.siblings()
@@ -60,9 +68,11 @@ $('document').ready(function() {
 			.hover(function () {
 				$(this).siblings().andSelf().removeClass('rating');
 				$(this).prevAll().andSelf().addClass('rating-over');
+				$(this).addClass('rating-hover');
 			}, function () {
+				$(this).siblings().andSelf().removeClass('rating-hover');
 				$(this).siblings().andSelf().removeClass('rating-over');
-				$(this).siblings('.rating-current').prevAll().andSelf().addClass('rating');
+				$(this).parent().find('.rating-current').prevAll().andSelf().addClass('rating');
 			});
 		}
 	};
@@ -98,20 +108,18 @@ $('document').ready(function() {
 				$searchResults.append($filled);
 
 				if (loggedInAs) {
-					$.getJSON('/api/beer/'+beer.id+'/rating/'+loggedInAs, function (result) {
-						var $ratingForm = fillTemplate('beer-rating-template', {
-							id : beer.id
-						});
-						$ratingForm.submit(function (e) {
-							$.post('/api/beer/'+beer.id+'/rating/'+loggedInAs, {
-								rating : $('input:radio:checked', $ratingForm).val()
-							});
-							return false;
-						});
-						$('input:radio[value='+result.rating+']', $ratingForm).attr('checked', true);
-						$('.beer-data-name', $filled).after($ratingForm);
-						starRating.create($ratingForm);
+					var $ratingForm = fillTemplate('beer-rating-template', {
+						id : beer.id
 					});
+					$ratingForm.submit(function (e) {
+						$.post('/api/beer/'+beer.id+'/rating/'+loggedInAs, {
+							rating : $('input:radio:checked', $ratingForm).val()
+						});
+						return false;
+					});
+					$('input:radio[value='+beer.rating+']', $ratingForm).attr('checked', true);
+					$('.beer-data-name', $filled).after($ratingForm);
+					starRating.create($ratingForm);
 				}
 			});
 		});

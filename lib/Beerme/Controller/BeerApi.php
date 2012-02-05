@@ -18,7 +18,7 @@ class BeerApi
 	public static function register(Application $app)
 	{
 		$app['beerStore'] = $app->share(function($app) {
-			return new BeerStore($app['neo4j'], $app['brewerydb']);
+			return new BeerStore($app['neo4j'], $app['brewerydb'], $app['ratingStore']);
 		});
 
 		$app['ratingStore'] = $app->share(function($app) {
@@ -26,9 +26,11 @@ class BeerApi
 		});
 
 		$app->get('/api/beer/{beerId}', function($beerId) use ($app) {
+			$userData = $app['session']->get('user');
+			$user = $app['userStore']->getUserByEmail($userData['email']);
 			$beer = $app['beerStore']->getBeer($beerId);
 			if ($beer) {
-				return new JsonResponse($beer->toApi());
+				return new JsonResponse($beer->toApi($user));
 			}
 			return new JsonResponse((object)array(), 404);
 		});
@@ -61,8 +63,10 @@ class BeerApi
 		});
 
 		$app->get('/api/beer/search/{searchTerm}', function($searchTerm) use ($app) {
-			return new JsonResponse(array_map(function($beer) {
-				return $beer->toApi();
+			$userData = $app['session']->get('user');
+			$user = $app['userStore']->getUserByEmail($userData['email']);
+			return new JsonResponse(array_map(function($beer) use ($user) {
+				return $beer->toApi($user);
 			},
 			$app['beerStore']->searchBeers($searchTerm)));
 		});

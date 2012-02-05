@@ -54,7 +54,11 @@ class RatingStore
 			$ratingRel = $user->getNode()->relateTo($beer->getNode(), 'RATED');
 		}
 
-		$ratingRel->setProperty('rating', $rating)->save();
+		$ratingRel->setProperties(array(
+			'rating' => $rating,
+			'timestamp', time(),
+		))
+		->save();
 	}
 
 	////////////////////////////////////////////////////////////////////////////////

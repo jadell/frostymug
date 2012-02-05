@@ -58,16 +58,17 @@
 	<form class="beer-rating-form" method="POST">
 		<input type="hidden" class="beer-id" value="<%id%>" />
 		<div class="stars">
-			<label><input class="rating-1"  name="rating" type="radio" value="1" >1</label>
-			<label><input class="rating-2"  name="rating" type="radio" value="2" >2</label>
-			<label><input class="rating-3"  name="rating" type="radio" value="3" >3</label>
-			<label><input class="rating-4"  name="rating" type="radio" value="4" >4</label>
-			<label><input class="rating-5"  name="rating" type="radio" value="5" >5</label>
-			<label><input class="rating-6"  name="rating" type="radio" value="6" >6</label>
-			<label><input class="rating-7"  name="rating" type="radio" value="7" >7</label>
-			<label><input class="rating-8"  name="rating" type="radio" value="8" >8</label>
-			<label><input class="rating-9"  name="rating" type="radio" value="9" >9</label>
-			<label><input class="rating-10" name="rating" type="radio" value="10">10</label>
+			<label><input name="rating" type="radio" value="0" >Not interested</label>
+			<label><input name="rating" type="radio" value="1" >.5 stars</label>
+			<label><input name="rating" type="radio" value="2" >1 star</label>
+			<label><input name="rating" type="radio" value="3" >1.5 stars</label>
+			<label><input name="rating" type="radio" value="4" >2 stars</label>
+			<label><input name="rating" type="radio" value="5" >2.5 stars</label>
+			<label><input name="rating" type="radio" value="6" >3 stars</label>
+			<label><input name="rating" type="radio" value="7" >3.5 stars</label>
+			<label><input name="rating" type="radio" value="8" >4 stars</label>
+			<label><input name="rating" type="radio" value="9" >4.5 stars</label>
+			<label><input name="rating" type="radio" value="10">5 stars</label>
 		</div>
 		<button>Rate</button>
 	</form>

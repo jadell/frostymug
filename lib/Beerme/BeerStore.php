@@ -4,6 +4,7 @@ namespace Beerme;
 use Silex\Application,
     Beerme\Model\Beer,
     Beerme\Model\Brewery,
+    Beerme\RatingStore,
     Everyman\Neo4j\Client,
     Everyman\Neo4j\Index\NodeIndex,
     Everyman\Neo4j\Cypher\Query,
@@ -12,6 +13,7 @@ use Silex\Application,
 
 class BeerStore
 {
+	protected $ratingStore;
 	protected $breweryDb;
 	protected $neo4j;
 
@@ -26,11 +28,13 @@ class BeerStore
 	 *
 	 * @param Client $neo4j
 	 * @param BreweryDb $breweryDb
+	 * @param RatingStore $ratingStore
 	 */
-	public function __construct(Client $neo4j, BreweryDb $breweryDb)
+	public function __construct(Client $neo4j, BreweryDb $breweryDb, RatingStore $ratingStore)
 	{
 		$this->neo4j = $neo4j;
 		$this->breweryDb = $breweryDb;
+		$this->ratingStore = $ratingStore;
 	}
 
 	/**
@@ -171,7 +175,7 @@ class BeerStore
 		$brewery->getNode()->relateTo($node, 'BREWS')->save();
 		$client->commitBatch();
 
-		return new Beer($node, $this);
+		return new Beer($node, $this, $this->ratingStore);
 	}
 
 	/**
@@ -237,7 +241,7 @@ class BeerStore
 		$index = $this->getBeerIndex();
 		$node = $index->findOne('id', $id);
 		if ($node) {
-			return new Beer($node, $this);
+			return new Beer($node, $this, $this->ratingStore);
 		}
 		return null;
 	}

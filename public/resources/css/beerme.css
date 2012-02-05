@@ -136,7 +136,7 @@ div.star-rating {
 	margin: auto;
 	padding: 2px;
 	text-align: center;
-	width: 122px;
+	width: 146px;
 }
 .stars div a {
 	background: transparent url('/resources/images/star_sprite.png') 0 0 no-repeat;
@@ -146,11 +146,17 @@ div.star-rating {
 	text-indent: -999em;
 	width: 12px;
 }
-.stars a.rating-right {
-	background-position: 0 -24px;
-	padding: 0px;
+.stars a.rating-right { background-position: -12px 0; }
+.stars a.rating-over { background-position: -48px 0; }
+.stars a.rating-over.rating-right { background-position: -60px 0; }
+.stars a.rating { background-position: -48px 0; }
+.stars a.rating.rating-right { background-position: -60px 0; }
+
+.stars a.rating-none {
+	background-position: -96px 0;
+	width: 24px;
 }
-.stars a.rating-over { background-position: 0 -96px; }
-.stars a.rating-over.rating-right { background-position: 0 -120px; }
-.stars a.rating { background-position: 0 -96px; }
-.stars a.rating.rating-right { background-position: 0 -120px; }
+.stars a.rating-none.rating-current,
+.stars a.rating-none.rating-hover {
+	background-position: -72px 0;
+}
