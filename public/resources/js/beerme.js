@@ -98,16 +98,11 @@ $('document').ready(function() {
 				,	breweryId : beer.brewery.id
 				,	icon : beer.brewery.icon || '/resources/images/beer-default.png'
 				});
-				$filled.find('img.label-image').load(function () {
-					var $this = $(this);
-					if (beer.brewery.icon) {
-						$this.addClass('glossy');
-					}
-					$this.wrap(function () {
-						return '<span class="image-wrap '+ ($this.attr('class') || '') + '" style="background:url(' + $this.attr('src') + ');" />';
+				$filled.find('img.label-image')
+					.addClass(beer.brewery.icon ? 'glossy' : '')
+					.wrap(function () {
+						return '<span class="image-wrap '+ ($(this).attr('class') || '') + '" />';
 					});
-					$this.css("opacity", "0");
-				});
 				$ratingForm = $filled.find('.beer-rating-form');
 				if (!loggedInAs) {
 					$ratingForm.hide();
