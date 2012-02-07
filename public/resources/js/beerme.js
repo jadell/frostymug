@@ -1,7 +1,7 @@
 $('document').ready(function() {
 
-
 	var $searchResults = $('#search-results');
+	var latestSearch = 0;
 	var loggedInAs = $('span.logged-in-as').text();
 
 	var fillTemplate = function (templateName, data) {
@@ -116,9 +116,14 @@ $('document').ready(function() {
 	$('#search-button').click(function (e) {
 		e.preventDefault();
 		var searchTerm = $('#search-term').val().trim() || ' ';
-		$searchResults.empty().append(fillTemplate('wait-template'));
+		var currentSearch = latestSearch = latestSearch + 1;
 
+		$searchResults.empty().append(fillTemplate('wait-template'));
 		$.getJSON('/api/beer/search/'+encodeURI(searchTerm), function (results) {
+			if (currentSearch != latestSearch) {
+				return;
+			}
+
 			$searchResults.empty();
 			if (results.length < 1) {
 				$searchResults.append(fillTemplate('no-results-template'));
