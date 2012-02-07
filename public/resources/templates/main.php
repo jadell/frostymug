@@ -22,7 +22,7 @@
 		<?php endif; ?>
 
 		<form id="search-form">
-			<input type="text" id="search-term" />
+			<input type="text" id="search-term" value="<?php echo $lastSearch; ?>" />
 			<button id="search-button">Search</button>
 		</form>
 

@@ -134,7 +134,7 @@ $('document').ready(function() {
 				return false;
 			}
 		}
-	,	delay : 100
+	,	delay : 300
 	,	minLength : 3
 	,	position : {
 			offset : "0 3"
@@ -143,6 +143,7 @@ $('document').ready(function() {
 
 	$('#search-button').click(function (e) {
 		e.preventDefault();
+		$('#search-term').autocomplete('close');
 		var searchTerm = $('#search-term').val().trim() || ' ';
 		var currentSearch = latestSearch = latestSearch + 1;
 
