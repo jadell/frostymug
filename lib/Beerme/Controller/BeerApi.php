@@ -78,5 +78,9 @@ class BeerApi
 			},
 			$app['beerStore']->searchBeers($searchTerm)));
 		});
+
+		$app->get('/api/beer/search/name/{searchTerm}', function($searchTerm) use ($app) {
+			return new JsonResponse($app['beerStore']->searchBeers($searchTerm, true));
+		});
 	}
 }

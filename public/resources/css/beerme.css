@@ -66,6 +66,37 @@ a.powered-by.blue {
 	clear: both;
 }
 
+.ui-autocomplete.ui-menu {
+	background: #dfdfdd;
+	border: 1px solid #b8a270;
+	border-radius: 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+	box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
+		-webkit-box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
+		-moz-box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
+	list-style: none;
+	padding: 8px;
+	width: 300px;
+}
+.ui-menu-item {
+	font-size: small;
+	margin-bottom: 2px;
+	padding: 3px;
+}
+.ui-menu-item a {
+	border: 1px solid #dfdfdd;
+	border-radius: 5px;
+		-moz-border-radius: 5px;
+		-webkit-border-radius: 5px;
+	font-size: small;
+	padding: 3px;
+	width: 100%;
+}
+.ui-state-hover  {
+	background: #b8a270;
+}
+
 .beer-data {
 	border: 1px solid #b8a270;
 	border-radius: 15px;

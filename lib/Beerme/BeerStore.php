@@ -156,10 +156,19 @@ class BeerStore
 	/**
 	 * Search Brewery DB for beers
 	 *
+	 * For autocomplete, pass the $nameOnly parameter as true,
+	 * which will cause only an array of names to be returned.
+	 * The array will be limited to the top 15 most relevant
+	 * matches.
+	 *
+	 * Searching only the name will also prevent found beers
+	 * from being loaded into the database.
+	 *
 	 * @param string $searchTerm
-	 * @return array of Beer
+	 * @param boolean $nameOnly
+	 * @return array of Beer (or string, if $nameOnly is true)
 	 */
-	public function searchBeers($searchTerm)
+	public function searchBeers($searchTerm, $nameOnly=false)
 	{
 		$results = $this->breweryDb->search($searchTerm, 'beer');
 
@@ -169,11 +178,19 @@ class BeerStore
 
 		$beers = array();
 		foreach ($results['data'] as $beerData) {
-			$beer = $this->findBeerInGraph($beerData['id']);
-			if (!$beer) {
-				$beer = $this->createBeerFromBreweryDbRaw($beerData);
+			if ($nameOnly) {
+				$beers[] = $beerData['name'];
+			} else {
+				$beer = $this->findBeerInGraph($beerData['id']);
+				if (!$beer) {
+					$beer = $this->createBeerFromBreweryDbRaw($beerData);
+				}
+				$beers[] = $beer;
 			}
-			$beers[] = $beer;
+		}
+
+		if ($nameOnly) {
+			$beers = array_slice(array_values($beers), 0, 15);
 		}
 
 		return $beers;

@@ -113,6 +113,34 @@ $('document').ready(function() {
 		}
 	}
 
+	var autoCompleteCache = {};
+	$('#search-term').autocomplete({
+		source : function (request, responseCallback) {
+			var term = request.term;
+			if (term in autoCompleteCache) {
+				responseCallback(autoCompleteCache[term]);
+				return;
+			}
+			$.getJSON('/api/beer/search/name/'+encodeURI(term), function (result) {
+				autoCompleteCache[term] = result;
+				responseCallback(result);
+			});
+		}
+	,	select : function () {
+			$('#search-button').click();
+		}
+	,	search : function () {
+			if (latestSearch != 0) {
+				return false;
+			}
+		}
+	,	delay : 100
+	,	minLength : 3
+	,	position : {
+			offset : "0 3"
+		}
+	});
+
 	$('#search-button').click(function (e) {
 		e.preventDefault();
 		var searchTerm = $('#search-term').val().trim() || ' ';
@@ -131,6 +159,7 @@ $('document').ready(function() {
 			}
 
 			$.each(results, handleBeerResult($searchResults));
+			latestSearch = 0
 		});
 	});
 
