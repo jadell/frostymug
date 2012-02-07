@@ -4,9 +4,15 @@ $('document').ready(function() {
 	var latestSearch = 0;
 	var loggedInAs = $('span.logged-in-as').text();
 
+	var templateCache = {};
 	var fillTemplate = function (templateName, data) {
 		data = data || {};
-		var tmpl = $('#'+templateName).html();
+		if (templateName in templateCache) {
+			var tmpl = templateCache[templateName];
+		} else {
+			var tmpl = $('#'+templateName).html();
+			templateCache[templateName] = tmpl;
+		}
 		$.each(data, function (key, value) {
 			tmpl = tmpl.replace(new RegExp('<%'+key+'%>', 'g'), value);
 		});

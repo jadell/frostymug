@@ -73,7 +73,7 @@ class BeerApi
 		$app->get('/api/beer/search/{searchTerm}', function($searchTerm) use ($app) {
 			$userData = $app['session']->get('user');
 			$user = $app['userStore']->getUserByEmail($userData['email']);
-			$app['session']->set('lastSearch', $searchTerm);
+			$app['session']->set('lastSearch', trim($searchTerm));
 			return new JsonResponse(array_map(function($beer) use ($user) {
 				return $beer->toApi($user);
 			},

@@ -35,6 +35,10 @@
 
 	<div id="content">
 		<div id="search-results">
+			<h2>Welcome to BeerMe!</h2>
+			<p>Use the search box to find your favorite beers or explore new ones.</p>
+			<p>Log in with your Google account to start rating the beers you discover.</p>
+			<p>Keep track of the beers you've rated with "My Ratings".</p>
 		</div>
 	</div>
 
