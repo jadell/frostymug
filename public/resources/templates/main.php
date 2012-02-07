@@ -24,6 +24,12 @@
 			<input type="text" id="search-term" />
 			<a href="#" class="button" id="search-button">Search</a>
 		</div>
+
+		<?php if ($user) : ?>
+			<div id="my-ratings-form">
+				<a href="#" class="button" id="my-ratings-button">My Ratings</a>
+			</div>
+		<?php endif; ?>
 	</div>
 
 	<div id="content">

@@ -3,7 +3,6 @@ namespace Beerme\Model;
 
 use Everyman\Neo4j\Node,
     Beerme\BeerStore,
-    Beerme\RatingStore,
     Beerme\Model\Brewery,
     Beerme\Model\User;
 
@@ -11,24 +10,21 @@ class Beer
 {
 	protected $node;
 	protected $beerStore;
-	protected $ratingStore;
 	protected $brewery = false;
 
-	protected $rater;
-	protected $rating = false;
+	protected $defaultRating = false;
+	protected $defaultEstimated = false;
 
 	/**
 	 * Create the beer
 	 *
 	 * @param Node $node
 	 * @param BeerStore $beerStore
-	 * @param RatingStore $ratingStore
 	 */
-	public function __construct(Node $node, BeerStore $beerStore, RatingStore $ratingStore)
+	public function __construct(Node $node, BeerStore $beerStore)
 	{
 		$this->node = $node;
 		$this->beerStore = $beerStore;
-		$this->ratingStore = $ratingStore;
 	}
 
 	/**
@@ -47,9 +43,7 @@ class Beer
 		);
 
 		$brewery = $this->getBrewery();
-		if ($brewery) {
-			$data['brewery'] = $brewery->toApi();
-		}
+		$data['brewery'] = $brewery ? $brewery->toApi() : null;
 
 		return $data;
 	}
@@ -111,15 +105,47 @@ class Beer
 	/**
 	 * Return the rating as given by the given User
 	 *
+	 * If no user is specified, use the default rating for this beer
+	 *
 	 * @param User $user
 	 * @return integer
 	 */
 	public function getRating(User $user=null)
 	{
-		if (!$user) {
-			return null;
+		$rating = array(
+			'rated' => null,
+			'estimated' => null,
+		);
+
+		if ($user) {
+			$rating['rated'] = $this->beerStore->getRating($user, $this);
+			if ($rating['rated'] === null) {
+				$rating['estimated'] = 5;
+			}
 		} else {
-			return $this->ratingStore->getRating($user, $this);
+			$rating = array(
+				'rated' => $this->defaultRating,
+				'estimated' => $this->defaultEstimated,
+			);
 		}
+
+
+		return $rating;
+	}
+
+	/**
+	 * Set default ratings to use
+	 *
+	 * Used if looking up ratings without passing in a user, or if the
+	 * given user has not rated this beer
+	 *
+	 * @param integer $defaultRating
+	 * @param integer $defaultEstimated
+	 * @return Beer
+	 */
+	public function setDefaultRatings($defaultRating=null, $defaultEstimated=null)
+	{
+		$this->defaultRating = $defaultRating;
+		$this->defaultEstimated = $defaultEstimated;
 	}
 }

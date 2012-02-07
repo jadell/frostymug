@@ -77,6 +77,42 @@ $('document').ready(function() {
 		}
 	};
 
+	var addBeerTemplate = function (beer) {
+		var $filled = fillTemplate('beer-data-template', {
+			id : beer.id
+		,	name : beer.name
+		,	description : beer.description || ''
+		,	breweryName : beer.brewery.name
+		,	breweryId : beer.brewery.id
+		,	icon : beer.brewery.icon || '/resources/images/beer-default.png'
+		});
+		$filled.find('img.label-image')
+			.addClass(beer.brewery.icon ? 'glossy' : '')
+			.wrap(function () {
+				return '<span class="image-wrap '+ ($(this).attr('class') || '') + '" />';
+			});
+		$ratingForm = $filled.find('.beer-rating-form');
+		if (!loggedInAs) {
+			$ratingForm.hide();
+		} else {
+			$ratingForm.submit(function (e) {
+				$.post('/api/beer/'+beer.id+'/rating/'+loggedInAs, {
+					rating : $(this).find('input:radio:checked').val()
+				});
+				return false;
+			});
+			$ratingForm.find('input:radio[value='+beer.rating.rated+']').attr('checked', true);
+			starRating.create($ratingForm);
+		}
+		$(this).append($filled);
+	};
+
+	var handleBeerResult = function (container) {
+		return function (idx, beer) {
+			addBeerTemplate.call(container, beer);
+		}
+	}
+
 	$('#search-button').click(function (e) {
 		e.preventDefault();
 		var searchTerm = $('#search-term').val();
@@ -89,35 +125,25 @@ $('document').ready(function() {
 				return;
 			}
 
-			$.each(results, function (idx, beer) {
-				var $filled = fillTemplate('beer-data-template', {
-					id : beer.id
-				,	name : beer.name
-				,	description : beer.description || ''
-				,	breweryName : beer.brewery.name
-				,	breweryId : beer.brewery.id
-				,	icon : beer.brewery.icon || '/resources/images/beer-default.png'
-				});
-				$filled.find('img.label-image')
-					.addClass(beer.brewery.icon ? 'glossy' : '')
-					.wrap(function () {
-						return '<span class="image-wrap '+ ($(this).attr('class') || '') + '" />';
-					});
-				$ratingForm = $filled.find('.beer-rating-form');
-				if (!loggedInAs) {
-					$ratingForm.hide();
-				} else {
-					$ratingForm.submit(function (e) {
-						$.post('/api/beer/'+beer.id+'/rating/'+loggedInAs, {
-							rating : $(this).find('input:radio:checked').val()
-						});
-						return false;
-					});
-					$ratingForm.find('input:radio[value='+beer.rating+']').attr('checked', true);
-					starRating.create($ratingForm);
-				}
-				$searchResults.append($filled);
-			});
+			$.each(results, handleBeerResult($searchResults));
+		});
+	});
+
+	$('#my-ratings-button').click(function (e) {
+		e.preventDefault();
+		if (!loggedInAs) {
+			return false;
+		}
+		$searchResults.empty().append(fillTemplate('wait-template'));
+
+		$.getJSON('/api/beer/ratings/'+loggedInAs, function (results) {
+			$searchResults.empty();
+			if (results.length < 1) {
+				$searchResults.append(fillTemplate('no-results-template'));
+				return;
+			}
+
+			$.each(results, handleBeerResult($searchResults));
 		});
 	});
 

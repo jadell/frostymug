@@ -2,9 +2,9 @@
 namespace Beerme;
 
 use Silex\Application,
+    Beerme\Model\User,
     Beerme\Model\Beer,
     Beerme\Model\Brewery,
-    Beerme\RatingStore,
     Everyman\Neo4j\Client,
     Everyman\Neo4j\Index\NodeIndex,
     Everyman\Neo4j\Cypher\Query,
@@ -13,7 +13,6 @@ use Silex\Application,
 
 class BeerStore
 {
-	protected $ratingStore;
 	protected $breweryDb;
 	protected $neo4j;
 
@@ -28,13 +27,31 @@ class BeerStore
 	 *
 	 * @param Client $neo4j
 	 * @param BreweryDb $breweryDb
-	 * @param RatingStore $ratingStore
 	 */
-	public function __construct(Client $neo4j, BreweryDb $breweryDb, RatingStore $ratingStore)
+	public function __construct(Client $neo4j, BreweryDb $breweryDb)
 	{
 		$this->neo4j = $neo4j;
 		$this->breweryDb = $breweryDb;
-		$this->ratingStore = $ratingStore;
+	}
+
+	/**
+	 * Retrieve a beer by its id
+	 *
+	 * @param string $beerId
+	 * @return Beer
+	 */
+	public function getBeer($beerId)
+	{
+		$beer = $this->findBeerInGraph($beerId);
+		if ($beer) {
+			return $beer;
+		}
+
+		$beer = $this->findBeerInBreweryDb($beerId);
+		if ($beer) {
+			return $beer;
+		}
+		return null;
 	}
 
 	/**
@@ -73,25 +90,67 @@ class BeerStore
 		}
 	}
 
+	/**
+	 * Retrieve all beers rated by the user
+	 *
+	 * Beers will have their default rating set to the
+	 * $user's rating to avoid re-lookups
+	 *
+	 * @param User $user
+	 * @return array of Beer
+	 */
+	public function getRatedBeersByUser(User $user)
+	{
+		$rated = $this->findRatingRelationships($user);
+		$beers = array();
+		foreach ($rated as $row) {
+			$beer = new Beer($row['b'], $this);
+			$beer->setDefaultRatings($row['r']->getProperty('rating'));
+			$beers[] = $beer;
+		}
+		return $beers;
+	}
 
 	/**
-	 * Retrieve a beer by its id
+	 * Retrieve the given user's rating of the given beer
 	 *
-	 * @param string $beerId
-	 * @return Beer
+	 * @param User $user
+	 * @param Beer $beer
+	 * @return integer
 	 */
-	public function getBeer($beerId)
+	public function getRating(User $user, Beer $beer)
 	{
-		$beer = $this->findBeerInGraph($beerId);
-		if ($beer) {
-			return $beer;
+		$existing = $this->findRatingRelationships($user, $beer);
+		return count($existing) > 0 ? $existing[0]['r']->getProperty('rating') : null;
+	}
+
+	/**
+	 * Rate a beer
+	 *
+	 * @param User $user
+	 * @param Beer $beer
+	 * @param integer $rating
+	 */
+	public function rateBeer(User $user, Beer $beer, $rating)
+	{
+		$rating = (integer)$rating;
+		$rating = max(0, $rating);
+		$rating = min(10, $rating);
+
+		$existing = $this->findRatingRelationships($user, $beer);
+		if (count($existing)>0) {
+			$ratingRel = $existing[0]['r'];
+		} else {
+			$ratingRel = $user->getNode()->relateTo($beer->getNode(), 'RATED');
 		}
 
-		$beer = $this->findBeerInBreweryDb($beerId);
-		if ($beer) {
-			return $beer;
-		}
-		return null;
+		$ratingRel->setProperties(array(
+			'rating' => $rating,
+			'timestamp', time(),
+		))
+		->save();
+
+		return $rating;
 	}
 
 	/**
@@ -175,7 +234,7 @@ class BeerStore
 		$brewery->getNode()->relateTo($node, 'BREWS')->save();
 		$client->commitBatch();
 
-		return new Beer($node, $this, $this->ratingStore);
+		return new Beer($node, $this);
 	}
 
 	/**
@@ -241,7 +300,7 @@ class BeerStore
 		$index = $this->getBeerIndex();
 		$node = $index->findOne('id', $id);
 		if ($node) {
-			return new Beer($node, $this, $this->ratingStore);
+			return new Beer($node, $this);
 		}
 		return null;
 	}
@@ -277,6 +336,28 @@ class BeerStore
 			return new Brewery($node);
 		}
 		return null;
+	}
+
+	/**
+	 * Find existing ratings between a beer and a user
+	 *
+	 * If $beer is not given, all ratings for the user will be returned
+	 *
+	 * @param User $user
+	 * @param Beer $beer
+	 * @return Relationship
+	 */
+	protected function findRatingRelationships(User $user, Beer $beer=null)
+	{
+		$cypher = "START u=node({user})";
+		$params = array('user' => $user->getNode()->getId());
+		if ($beer) {
+			$cypher .= ", b=node({beer})";
+			$params['beer'] = $beer->getNode()->getId();
+		}
+		$cypher .= "MATCH u-[r:RATED]->b RETURN b, r ORDER BY b.name";
+		$query = new Query($this->neo4j, $cypher, $params);
+		return $query->getResultSet();
 	}
 
 	/**

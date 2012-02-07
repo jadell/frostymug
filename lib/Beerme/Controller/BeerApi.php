@@ -5,8 +5,7 @@ use Silex\Application,
 	Symfony\Component\HttpFoundation\Request,
     Beerme\JsonResponse,
     Beerme\BeerStore,
-    Beerme\UserStore,
-    Beerme\RatingStore;
+    Beerme\UserStore;
 
 class BeerApi
 {
@@ -18,11 +17,7 @@ class BeerApi
 	public static function register(Application $app)
 	{
 		$app['beerStore'] = $app->share(function($app) {
-			return new BeerStore($app['neo4j'], $app['brewerydb'], $app['ratingStore']);
-		});
-
-		$app['ratingStore'] = $app->share(function($app) {
-			return new RatingStore($app['neo4j']);
+			return new BeerStore($app['neo4j'], $app['brewerydb']);
 		});
 
 		$app->get('/api/beer/{beerId}', function($beerId) use ($app) {
@@ -41,7 +36,7 @@ class BeerApi
 			$check = $app['session']->get('user');
 
 			if ($beer && $user->getEmail() == $check['email']) {
-				$rating = $app['ratingStore']->getRating($user, $beer);
+				$rating = $app['beerStore']->getRating($user, $beer);
 				return new JsonResponse(array(
 					'rating' => $rating,
 				));
@@ -56,8 +51,21 @@ class BeerApi
 			$rating = $request->get('rating');
 
 			if ($beer && $user->getEmail() == $check['email']) {
-				$app['ratingStore']->rateBeer($user, $beer, $rating);
+				$app['beerStore']->rateBeer($user, $beer, $rating);
 				return new JsonResponse(null, 204);
+			}
+			return new JsonResponse((object)array(), 404);
+		});
+
+		$app->get('/api/beer/ratings/{email}', function($email) use ($app) {
+			$user = $app['userStore']->getUserByEmail($email);
+			$check = $app['session']->get('user');
+
+			if ($user->getEmail() == $check['email']) {
+				return new JsonResponse(array_map(function($beer) use ($user) {
+					return $beer->toApi();
+				},
+				$app['beerStore']->getRatedBeersByUser($user)));
 			}
 			return new JsonResponse((object)array(), 404);
 		});
