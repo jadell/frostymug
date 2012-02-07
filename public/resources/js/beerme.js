@@ -115,10 +115,10 @@ $('document').ready(function() {
 
 	$('#search-button').click(function (e) {
 		e.preventDefault();
-		var searchTerm = $('#search-term').val();
+		var searchTerm = $('#search-term').val().trim() || ' ';
 		$searchResults.empty().append(fillTemplate('wait-template'));
 
-		$.getJSON('/api/beer/search/'+searchTerm, function (results) {
+		$.getJSON('/api/beer/search/'+encodeURI(searchTerm), function (results) {
 			$searchResults.empty();
 			if (results.length < 1) {
 				$searchResults.append(fillTemplate('no-results-template'));

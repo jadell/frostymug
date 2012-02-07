@@ -20,10 +20,10 @@
 			</form>
 		<?php endif; ?>
 
-		<div id="search-form">
+		<form id="search-form">
 			<input type="text" id="search-term" />
-			<a href="#" class="button" id="search-button">Search</a>
-		</div>
+			<button id="search-button">Search</button>
+		</form>
 
 		<?php if ($user) : ?>
 			<div id="my-ratings-form">
