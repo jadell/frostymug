@@ -120,7 +120,7 @@ class Beer
 		if ($user) {
 			$rating['rated'] = $this->beerStore->getRating($user, $this);
 			if ($rating['rated'] === null) {
-				$rating['estimated'] = 5;
+				$rating['estimated'] = null;
 			}
 		} else {
 			$rating = array(

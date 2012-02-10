@@ -25,15 +25,17 @@ $('document').ready(function() {
 			var $selector = $form.find('div.stars');
 			$selector.each(function () {
 				var $list = $('<div class="star-rating"></div>');
+				var found = false;
 				$(this).find('input:radio').each(function (i) {
 					var rating = $(this).val();
 					var title = $(this).parent().text();
 					var $item = $('<a href="#"></a>')
 						.attr('title', title)
+						.attr('data-value', rating)
 						.text(rating);
 					// .5 - 5 stars
 					if (rating > 0) {
-							$item.addClass(i % 2 == 0 ? 'rating-right' : '');
+							$item.addClass(i % 2 == 0 ? 'right' : '');
 					// 0 = not interested
 					} else {
 						$item.addClass('rating-none');
@@ -41,10 +43,16 @@ $('document').ready(function() {
 					starRating.addHandlers($item, $form);
 					$list.append($item);
 					if ($(this).is(':checked')) {
+						found = true;
 						$item.addClass('rating-current')
 							.prevAll().andSelf().addClass('rating');
 					}
 				});
+				if (!found) {
+					var estimated = $(this).find('input:radio[data-estimated]').val();
+					$list.find('a[data-value="'+estimated+'"]').addClass('estimate-current')
+						.prevAll().andSelf().addClass('estimate');
+				}
 				$(this).append($list).find('input:radio').parent().hide();
 			});
 			$(form).find('button').hide();
@@ -60,6 +68,8 @@ $('document').ready(function() {
 					.siblings()
 						.removeClass('rating')
 						.removeClass('rating-current')
+						.removeClass('estimate')
+						.removeClass('estimate-current')
 						.end()
 					.prevAll().andSelf().addClass('rating');
 				$form.find('input:radio')
@@ -72,13 +82,14 @@ $('document').ready(function() {
 			})
 
 			.hover(function () {
-				$(this).siblings().andSelf().removeClass('rating');
+				$(this).siblings().andSelf().removeClass('rating estimate');
 				$(this).prevAll().andSelf().addClass('rating-over');
 				$(this).addClass('rating-hover');
 			}, function () {
 				$(this).siblings().andSelf().removeClass('rating-hover');
 				$(this).siblings().andSelf().removeClass('rating-over');
 				$(this).parent().find('.rating-current').prevAll().andSelf().addClass('rating');
+				$(this).parent().find('.estimate-current').prevAll().andSelf().addClass('estimate');
 			});
 		}
 	};
@@ -108,6 +119,7 @@ $('document').ready(function() {
 				return false;
 			});
 			$ratingForm.find('input:radio[value='+beer.rating.rated+']').attr('checked', true);
+			$ratingForm.find('input:radio[value='+beer.rating.estimated+']').attr('data-estimated', true);
 			starRating.create($ratingForm);
 		}
 		$(this).append($filled);

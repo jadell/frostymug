@@ -191,17 +191,13 @@ div.star-rating {
 	text-indent: -999em;
 	width: 12px;
 }
-.stars a.rating-right { background-position: -12px 0; }
-.stars a.rating-over { background-position: -48px 0; }
-.stars a.rating-over.rating-right { background-position: -60px 0; }
+.stars a.right { background-position: -12px 0; }
+.stars a.estimate { background-position: -24px 0; }
+.stars a.estimate.right { background-position: -36px 0; }
 .stars a.rating { background-position: -48px 0; }
-.stars a.rating.rating-right { background-position: -60px 0; }
-
-.stars a.rating-none {
-	background-position: -96px 0;
-	width: 24px;
-}
+.stars a.rating.right { background-position: -60px 0; }
+.stars a.rating-over { background-position: -48px 0; }
+.stars a.rating-over.right { background-position: -60px 0; }
+.stars a.rating-none { background-position: -96px 0; width: 24px; }
 .stars a.rating-none.rating-current,
-.stars a.rating-none.rating-hover {
-	background-position: -72px 0;
-}
+.stars a.rating-none.rating-hover { background-position: -72px 0; }
