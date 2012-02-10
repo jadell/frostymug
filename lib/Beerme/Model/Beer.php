@@ -3,6 +3,7 @@ namespace Beerme\Model;
 
 use Everyman\Neo4j\Node,
     Beerme\BeerStore,
+    Beerme\Model\Rating,
     Beerme\Model\Brewery,
     Beerme\Model\User;
 
@@ -10,42 +11,38 @@ class Beer
 {
 	protected $node;
 	protected $beerStore;
+	protected $rating;
 	protected $brewery = false;
-
-	protected $defaultRating = false;
-	protected $defaultEstimated = false;
 
 	/**
 	 * Create the beer
 	 *
 	 * @param Node $node
 	 * @param BeerStore $beerStore
+	 * @param Rating $rating
 	 */
-	public function __construct(Node $node, BeerStore $beerStore)
+	public function __construct(Node $node, BeerStore $beerStore, Rating $rating)
 	{
 		$this->node = $node;
 		$this->beerStore = $beerStore;
+		$this->rating = $rating;
 	}
 
 	/**
 	 * Retrieve the fields that the API expects
 	 *
-	 * @param User $user to retrieve ratings, or null for no rating
+	 * @param User $user to retrieve ratings
 	 * @return array
 	 */
 	public function toApi(User $user=null)
 	{
-		$data = array(
+		return array(
 			'id' => $this->getId(),
 			'name' => $this->getName(),
 			'description' => $this->getDescription(),
-			'rating' => $this->getRating($user),
+			'rating' => $this->rating->getRating($this, $user),
+			'brewery' => $this->getBrewery()->toApi(),
 		);
-
-		$brewery = $this->getBrewery();
-		$data['brewery'] = $brewery ? $brewery->toApi() : null;
-
-		return $data;
 	}
 
 	/**
@@ -100,52 +97,5 @@ class Beer
 	public function getNode()
 	{
 		return $this->node;
-	}
-
-	/**
-	 * Return the rating as given by the given User
-	 *
-	 * If no user is specified, use the default rating for this beer
-	 *
-	 * @param User $user
-	 * @return integer
-	 */
-	public function getRating(User $user=null)
-	{
-		$rating = array(
-			'rated' => null,
-			'estimated' => null,
-		);
-
-		if ($user) {
-			$rating['rated'] = $this->beerStore->getRating($user, $this);
-			if ($rating['rated'] === null) {
-				$rating['estimated'] = null;
-			}
-		} else {
-			$rating = array(
-				'rated' => $this->defaultRating,
-				'estimated' => $this->defaultEstimated,
-			);
-		}
-
-
-		return $rating;
-	}
-
-	/**
-	 * Set default ratings to use
-	 *
-	 * Used if looking up ratings without passing in a user, or if the
-	 * given user has not rated this beer
-	 *
-	 * @param integer $defaultRating
-	 * @param integer $defaultEstimated
-	 * @return Beer
-	 */
-	public function setDefaultRatings($defaultRating=null, $defaultEstimated=null)
-	{
-		$this->defaultRating = $defaultRating;
-		$this->defaultEstimated = $defaultEstimated;
 	}
 }

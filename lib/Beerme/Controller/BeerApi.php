@@ -36,7 +36,7 @@ class BeerApi
 			$check = $app['session']->get('user');
 
 			if ($beer && $user->getEmail() == $check['email']) {
-				$rating = $app['beerStore']->getRating($user, $beer);
+				$rating = $app['beerStore']->getRating($beer, $user);
 				return new JsonResponse(array(
 					'rating' => $rating,
 				));

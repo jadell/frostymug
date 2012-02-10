@@ -5,6 +5,8 @@ use Silex\Application,
     Beerme\Model\User,
     Beerme\Model\Beer,
     Beerme\Model\Brewery,
+    Beerme\Model\Rating\StaticRating,
+    Beerme\Model\Rating\LookupRating,
     Everyman\Neo4j\Client,
     Everyman\Neo4j\Index\NodeIndex,
     Everyman\Neo4j\Cypher\Query,
@@ -91,6 +93,22 @@ class BeerStore
 	}
 
 	/**
+	 * Retrieve the estimated rating for the given beer
+	 *
+	 * @param Beer $beer
+	 * @param User $user
+	 * @return integer
+	 */
+	public function getEstimatedRating(Beer $beer, User $user=null)
+	{
+		if (!$user) {
+			return null;
+		}
+
+		return rand(1,10);
+	}
+
+	/**
 	 * Retrieve all beers rated by the user
 	 *
 	 * Beers will have their default rating set to the
@@ -104,9 +122,7 @@ class BeerStore
 		$rated = $this->findRatingRelationships($user);
 		$beers = array();
 		foreach ($rated as $row) {
-			$beer = new Beer($row['b'], $this);
-			$beer->setDefaultRatings($row['r']->getProperty('rating'));
-			$beers[] = $beer;
+			$beers[] = new Beer($row['b'], $this, new StaticRating($row['r']->getProperty('rating')));
 		}
 		return $beers;
 	}
@@ -114,12 +130,16 @@ class BeerStore
 	/**
 	 * Retrieve the given user's rating of the given beer
 	 *
-	 * @param User $user
 	 * @param Beer $beer
+	 * @param User $user
 	 * @return integer
 	 */
-	public function getRating(User $user, Beer $beer)
+	public function getRating(Beer $beer, User $user=null)
 	{
+		if (!$user) {
+			return null;
+		}
+
 		$existing = $this->findRatingRelationships($user, $beer);
 		return count($existing) > 0 ? $existing[0]['r']->getProperty('rating') : null;
 	}
@@ -251,7 +271,7 @@ class BeerStore
 		$brewery->getNode()->relateTo($node, 'BREWS')->save();
 		$client->commitBatch();
 
-		return new Beer($node, $this);
+		return new Beer($node, $this, new LookupRating($this));
 	}
 
 	/**
@@ -317,7 +337,7 @@ class BeerStore
 		$index = $this->getBeerIndex();
 		$node = $index->findOne('id', $id);
 		if ($node) {
-			return new Beer($node, $this);
+			return new Beer($node, $this, new LookupRating($this));
 		}
 		return null;
 	}
