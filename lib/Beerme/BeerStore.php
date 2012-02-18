@@ -106,7 +106,7 @@ class BeerStore
 			return null;
 		}
 
-		// $this->determineSimilarUsers($user);
+		$this->determineSimilarUsers($user);
 
 		$userNodeId = $user->getNode()->getId();
 		$beerNodeId = $beer->getNode()->getId();
@@ -196,7 +196,7 @@ GREMLIN;
 
 		$ratingRel->setProperties(array(
 			'rating' => $rating,
-			'timestamp', time(),
+			'timestamp' => time(),
 		))
 		->save();
 
@@ -356,9 +356,11 @@ GREMLIN;
 		           '    .sideEffect{diff=Math.abs(it.getProperty("rating")-w)}'.
 		           '    .outV.sideEffect{ me=m[it.id]; me[0]++; me[1]+=diff; }.iterate();'.
 		           'm.findAll{it.value[1]/it.value[0] <= 2}.collect{g.v(it.key)}._()'.
+		           '    .each{g.addEdge(user, it, "SIMILAR", ["at":time])}'.
 		           '';
 		$query = new GremlinQuery($this->neo4j, $gremlin, array(
 			'userId' => $user->getNode()->getId(),
+			'time' => time(),
 		));
 		$results = $query->getResultSet();
 		dump($results);die;
