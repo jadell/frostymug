@@ -30,6 +30,9 @@
 			<div id="my-ratings-form">
 				<a href="#" class="button" id="my-ratings-button">My Ratings</a>
 			</div>
+			<div id="my-recommendations-form">
+				<a href="#" class="button" id="my-recommendations-button">Recommendations</a>
+			</div>
 		<?php endif; ?>
 	</div>
 
@@ -39,6 +42,7 @@
 			<p>Use the search box to find your favorite beers or explore new ones.</p>
 			<p>Log in with your Google account to start rating the beers you discover.</p>
 			<p>Keep track of the beers you've rated with "My Ratings".</p>
+			<p>Get new recommendations with "Recommendations".</p>
 		</div>
 	</div>
 

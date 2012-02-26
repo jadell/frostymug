@@ -200,4 +200,22 @@ $('document').ready(function() {
 		});
 	});
 
+	$('#my-recommendations-button').click(function (e) {
+		e.preventDefault();
+		if (!loggedInAs) {
+			return false;
+		}
+		$searchResults.empty().append(fillTemplate('wait-template'));
+
+		$.getJSON('/api/beer/recommendations/'+loggedInAs, function (results) {
+			$searchResults.empty();
+			if (results.length < 1) {
+				$searchResults.append(fillTemplate('no-results-template'));
+				return;
+			}
+
+			$.each(results, handleBeerResult($searchResults));
+		});
+	});
+
 });

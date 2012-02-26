@@ -9,8 +9,8 @@ use Silex\Application,
     Beerme\Model\Rating\LookupRating,
     Everyman\Neo4j\Client,
     Everyman\Neo4j\Index\NodeIndex,
-    Everyman\Neo4j\Cypher\Query as CypherQuery,
-    Everyman\Neo4j\Gremlin\Query as GremlinQuery,
+    Everyman\Neo4j\Cypher\Query as Cypher,
+    Everyman\Neo4j\Gremlin\Query as Gremlin,
     Everyman\Neo4j\Node,
     Pintlabs_Service_Brewerydb as BreweryDb;
 
@@ -55,6 +55,53 @@ class BeerStore
 			return $beer;
 		}
 		return null;
+	}
+
+	/**
+	 * Retrieve list of recommended beers for the user
+	 *
+	 * @param User $user
+	 * @return array of Beer
+	 */
+	public function getBeerRecommendationsForUser(User $user=null)
+	{
+		if (!$user) {
+			return array();
+		}
+
+		$userNodeId = $user->getNode()->getId();
+		if (!$userNodeId) {
+			return array();
+		}
+
+		$gremlin = <<<GREMLIN
+		m=[:].withDefault{[0,0]};
+		r=[:].withDefault{[0,0]};
+		user=g.v(userId);
+		user.outE("RATED").sideEffect{w=it.getProperty('rating')}
+		        .inV.inE("RATED").outV.except([user]).back(2)
+		        .sideEffect{diff=Math.abs(it.getProperty('rating')-w)}
+		        .outV.sideEffect{ me=m[it.id]; me[0]++; me[1]+=diff; }.iterate();
+		m.findAll{it.value[1]/it.value[0] <= 2}.collect{g.v(it.key)}._()
+		        .outE("RATED").sideEffect{rating=it.rating}.inV
+		        .sideEffect{me=r[it.id]; me[0]++; me[1]+=rating; }.iterate();
+		r.collectEntries{key, value -> [key , value[1]/value[0]]}
+				.findAll{it.value > 5}
+		        .sort{a,b -> b.value <=> a.value}[0..24]
+		        .collect{key,value -> [g.v(key), value]}._()
+GREMLIN;
+		$query = new Gremlin($this->neo4j, $gremlin, array(
+			'userId'=>$userNodeId,
+		));
+		$results = $query->getResultSet();
+
+		$beers = array();
+		foreach ($results as $row) {
+			// Work around a nested array bug in parsing result sets
+			$beerNode = $this->neo4j->getEntityMapper()->getEntityFor($row[0][0]);
+			$beers[] = new Beer($beerNode, $this, new StaticRating(null, $row[0][1]));
+		}
+		return $beers;
 	}
 
 	/**
@@ -106,8 +153,6 @@ class BeerStore
 			return null;
 		}
 
-		$this->determineSimilarUsers($user);
-
 		$userNodeId = $user->getNode()->getId();
 		$beerNodeId = $beer->getNode()->getId();
 		if (!$userNodeId || !$beerNodeId) {
@@ -115,20 +160,19 @@ class BeerStore
 		}
 
 		$gremlin = <<<GREMLIN
-			m=[:].withDefault{[0,0]};
-			user=g.v(userId);
-			beer=g.v(beerId);
-			user.outE("RATED").sideEffect{w=it.getProperty('rating')}
-			        .inV.inE("RATED").outV.except([user]).back(2)
-			        .sideEffect{diff=Math.abs(it.getProperty('rating')-w)}
-			        .outV.sideEffect{ me=m[it.id]; me[0]++; me[1]+=diff; }.iterate();
-			m.findAll{it.value[1]/it.value[0] <= 2}.collect{g.v(it.key)}._()
-			        .outE("RATED").inV.filter{it==beer}.back(2).dedup().rating.mean();
+		m=[:].withDefault{[0,0]};
+		user=g.v(userId);
+		beer=g.v(beerId);
+		user.outE("RATED").sideEffect{w=it.getProperty('rating')}
+		        .inV.inE("RATED").outV.except([user]).back(2)
+		        .sideEffect{diff=Math.abs(it.getProperty('rating')-w)}
+		        .outV.sideEffect{ me=m[it.id]; me[0]++; me[1]+=diff; }.iterate();
+		m.findAll{it.value[1]/it.value[0] <= 2}.collect{g.v(it.key)}._()
+		        .outE("RATED").inV.filter{it==beer}.back(2).dedup().rating.mean()
 GREMLIN;
-
-		$query = new GremlinQuery($this->neo4j, $gremlin, array(
-			'userId' => $userNodeId,
-			'beerId' => $beerNodeId,
+		$query = new Gremlin($this->neo4j, $gremlin, array(
+			'userId'=>$userNodeId,
+			'beerId'=>$beerNodeId
 		));
 		$results = $query->getResultSet();
 		$rating = $results[0][0];
@@ -340,33 +384,6 @@ GREMLIN;
 	}
 
 	/**
-	 * Determine the set of users who rate similarly to the given user
-	 *
-	 * @param User $user
-	 * @return array
-	 */
-	protected function determineSimilarUsers(User $user)
-	{
-		$gremlin =
-		           'g.v(userId).bothE("SIMILAR").sideEffect{g.removeEdge(it)}.iterate();'.
-		           'm=[:].withDefault{[0,0]};'.
-		           'user=g.v(userId);'.
-		           'user.outE("RATED").sideEffect{w=it.getProperty("rating")}'.
-		           '    .inV.inE("RATED").outV.except([user]).back(2)'.
-		           '    .sideEffect{diff=Math.abs(it.getProperty("rating")-w)}'.
-		           '    .outV.sideEffect{ me=m[it.id]; me[0]++; me[1]+=diff; }.iterate();'.
-		           'm.findAll{it.value[1]/it.value[0] <= 2}.collect{g.v(it.key)}._()'.
-		           '    .each{g.addEdge(user, it, "SIMILAR", ["at":time])}'.
-		           '';
-		$query = new GremlinQuery($this->neo4j, $gremlin, array(
-			'userId' => $user->getNode()->getId(),
-			'time' => time(),
-		));
-		$results = $query->getResultSet();
-		dump($results);die;
-	}
-
-	/**
 	 * Look up beer in BreweryDb
 	 *
 	 * @param string $id
@@ -450,7 +467,7 @@ GREMLIN;
 			$params['beer'] = $beer->getNode()->getId();
 		}
 		$cypher .= "MATCH u-[r:RATED]->b RETURN b, r ORDER BY b.name";
-		$query = new CypherQuery($this->neo4j, $cypher, $params);
+		$query = new Cypher($this->neo4j, $cypher, $params);
 		return $query->getResultSet();
 	}
 
@@ -477,7 +494,7 @@ GREMLIN;
 	{
 		if (!$this->beerRef) {
 			$client = $this->neo4j;
-			$query = new CypherQuery($client, "START z=node(0) MATCH (z)-[:BEERS]->(ref) RETURN ref");
+			$query = new Cypher($client, "START z=node(0) MATCH (z)-[:BEERS]->(ref) RETURN ref");
 			$results = $query->getResultSet();
 			if (count($results) < 1) {
 				$this->beerRef = $client->getReferenceNode()
@@ -515,7 +532,7 @@ GREMLIN;
 	{
 		if (!$this->breweryRef) {
 			$client = $this->neo4j;
-			$query = new CypherQuery($client, "START z=node(0) MATCH (z)-[:BREWERIES]->(ref) RETURN ref");
+			$query = new Cypher($client, "START z=node(0) MATCH (z)-[:BREWERIES]->(ref) RETURN ref");
 			$results = $query->getResultSet();
 			if (count($results) < 1) {
 				$this->breweryRef = $client->getReferenceNode()

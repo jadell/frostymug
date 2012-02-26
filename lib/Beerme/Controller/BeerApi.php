@@ -70,6 +70,19 @@ class BeerApi
 			return new JsonResponse((object)array(), 404);
 		});
 
+		$app->get('/api/beer/recommendations/{email}', function($email) use ($app) {
+			$user = $app['userStore']->getUserByEmail($email);
+			$check = $app['session']->get('user');
+
+			if ($user->getEmail() == $check['email']) {
+				return new JsonResponse(array_map(function($beer) use ($user) {
+					return $beer->toApi();
+				},
+				$app['beerStore']->getBeerRecommendationsForUser($user)));
+			}
+			return new JsonResponse((object)array(), 404);
+		});
+
 		$app->get('/api/beer/search/{searchTerm}', function($searchTerm) use ($app) {
 			$userData = $app['session']->get('user');
 			$user = $app['userStore']->getUserByEmail($userData['email']);
