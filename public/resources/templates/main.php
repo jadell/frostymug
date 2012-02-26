@@ -92,6 +92,32 @@
 	<div class="result no-results">No results matched your search.</div>
 </script>
 
+<script type="text/template" id="no-recommendations-template">
+	<div class="result no-recommendations">
+		<h2>Sorry, we can&apos;t recommend any beers to you right now.</h2>
+		<p>
+			There may be a few reasons for this.
+			<ul>
+				<li>
+					<p class="reason">Maybe: You haven&apos;t rated enough beers.</p>
+					<p>Recommendations are based off of your own ratings of beers you have tried.
+					If you haven&apos;t rated enough beers, we can&apos;t determine your tastes
+					well enough to give you good recommendations.</p>
+					<p class="solution">Solution: Rate more beers!</p>
+				</li>
+				<li>
+					<p class="reason">Maybe: We couldn&apos;t find other users similar to you.</p>
+					<p>We look for other users who have the same taste in beer as you, and
+					find things they like that you haven&apos;t tried. If no other users are close
+					enough to your tastes, we can&apos;t give you good recommendations.</p>
+					<p class="solution">Solution: Get your friends and drinking buddies
+					to sign up and rate beers!</p>
+				</li>
+			</ul>
+		</p>
+	</div>
+</script>
+
 <script type="text/template" id="bad-login-template">
 	<div class="result bad-login">Bad login.</div>
 </script>

@@ -210,7 +210,7 @@ $('document').ready(function() {
 		$.getJSON('/api/beer/recommendations/'+loggedInAs, function (results) {
 			$searchResults.empty();
 			if (results.length < 1) {
-				$searchResults.append(fillTemplate('no-results-template'));
+				$searchResults.append(fillTemplate('no-recommendations-template'));
 				return;
 			}
 
