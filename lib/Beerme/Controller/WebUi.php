@@ -56,8 +56,7 @@ class WebUi
 				}
 
 				$userStore = $app['userStore'];
-				// $user = $userStore->createUser($attributes['contact/email']);
-				$user = $userStore->createUser('testguy@example.com');
+				$user = $userStore->createUser($attributes['contact/email']);
 				if ($user) {
 					$app['session']->start();
 					$app['session']->set('user', $user->toApi());
