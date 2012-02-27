@@ -36,6 +36,36 @@ body {
 	padding-top: 6px;
 }
 
+#login-form,
+#logout-form {
+	float: right;
+	font-size: small;
+}
+
+#logout-form {
+	position: relative;
+	top: 3px;
+}
+
+a.button,
+button {
+	background: #E0DA99;
+	border: 1px solid #b8a270;
+	border-radius: 3px;
+		-moz-border-radius: 3px;
+		-webkit-border-radius: 3px;
+	box-shadow: 1px 1px 2px -1px rgba(50, 50, 50, 0.5);
+		-webkit-box-shadow: 1px 1px 2px -1px rgba(50, 50, 50, 0.5);
+		-moz-box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
+	color: #000000;
+	cursor: pointer;
+	font-size: small;
+	padding: 1px 6px;
+	text-decoration: none;
+}
+
+
+
 a.powered-by {
 	border-radius: 15px;
 		-moz-border-radius: 15px;

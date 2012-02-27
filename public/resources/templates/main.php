@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>BeerMe!</title>
+	<title>FrostyMug - Beer Ratings and Recommendations</title>
 
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
@@ -12,10 +12,12 @@
 <div id="main">
 	<div id="head">
 		<?php if ($user) : ?>
-			<span class="logged-in-as"><?php echo $user['email']; ?></span>
-			<a href="/logout" class="button" id="logout-button">Logout</a>
+			<div id="logout-form">
+				<span class="logged-in-as"><?php echo $user['email']; ?></span>
+				<a href="/logout" class="button" id="logout-button">Logout</a>
+			</div>
 		<?php else : ?>
-			<form action="/login" method="POST">
+			<form id="login-form" action="/login" method="POST">
 				<input type="hidden" name="openid_identifier" value="https://www.google.com/accounts/o8/id" />
 				<button type="submit">Login with Google</button>
 			</form>
@@ -24,25 +26,20 @@
 		<form id="search-form">
 			<input type="text" id="search-term" value="<?php echo $lastSearch; ?>" />
 			<button id="search-button">Search</button>
-		</form>
-
-		<?php if ($user) : ?>
-			<div id="my-ratings-form">
+			<?php if ($user) : ?>
 				<a href="#" class="button" id="my-ratings-button">My Ratings</a>
-			</div>
-			<div id="my-recommendations-form">
 				<a href="#" class="button" id="my-recommendations-button">Recommendations</a>
-			</div>
-		<?php endif; ?>
+			<?php endif; ?>
+		</form>
 	</div>
 
 	<div id="content">
 		<div id="search-results">
-			<h2>Welcome to BeerMe!</h2>
+			<h2>Welcome to FrostyMug!</h2>
 			<p>Use the search box to find your favorite beers or explore new ones.</p>
 			<p>Log in with your Google account to start rating the beers you discover.</p>
-			<p>Keep track of the beers you've rated with "My Ratings".</p>
 			<p>Get new recommendations with "Recommendations".</p>
+			<p>Keep track of the beers you've rated with "My Ratings".</p>
 		</div>
 	</div>
 
