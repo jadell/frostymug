@@ -50,8 +50,11 @@ $app['brewerydb'] = $app->share(function ($app) {
 });
 
 // Register controllers
-Beerme\Controller\WebUi::register($app);
-Beerme\Controller\BeerApi::register($app);
+// Beerme\Controller\WebUi::register($app);
+// Beerme\Controller\BeerApi::register($app);
+$app->get('/', function () {
+	return "FrostyMug is down for maintenance. Please try again later.";
+});
 
 function dump()
 {
