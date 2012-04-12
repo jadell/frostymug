@@ -27,8 +27,19 @@ class Brewery
 		return array(
 			'id' => $this->getId(),
 			'name' => $this->getName(),
+			'description' => $this->getDescription(),
 			'icon' => $this->getIconUrl(),
 		);
+	}
+
+	/**
+	 * Return the description
+	 *
+	 * @return string
+	 */
+	public function getDescription()
+	{
+		return $this->node->getProperty('description');
 	}
 
 	/**

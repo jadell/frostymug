@@ -40,6 +40,7 @@ class Beer
 			'id' => $this->getId(),
 			'name' => $this->getName(),
 			'description' => $this->getDescription(),
+			'icon' => $this->getIconUrl(),
 			'rating' => $this->rating->getRating($this, $user),
 			'brewery' => $this->getBrewery()->toApi(),
 		);
@@ -67,6 +68,16 @@ class Beer
 	public function getDescription()
 	{
 		return $this->node->getProperty('description');
+	}
+
+	/**
+	 * Return the icon
+	 *
+	 * @return string
+	 */
+	public function getIconUrl()
+	{
+		return $this->node->getProperty('icon');
 	}
 
 	/**

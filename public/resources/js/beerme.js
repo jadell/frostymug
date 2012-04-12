@@ -101,7 +101,7 @@ $('document').ready(function() {
 		,	description : beer.description || ''
 		,	breweryName : beer.brewery.name
 		,	breweryId : beer.brewery.id
-		,	icon : beer.brewery.icon || '/resources/images/beer-default.png'
+		,	icon : beer.icon || beer.brewery.icon || '/resources/images/beer-default.png'
 		});
 		$filled.find('img.label-image')
 			.addClass(beer.brewery.icon ? 'glossy' : '')
