@@ -13,8 +13,7 @@ class Pintlabs_Service_Brewerydb
      *
      * @var string
      */
-    // const BASE_URL = 'http://www.brewerydb.com/api';
-    const BASE_URL = 'http://api.playground.brewerydb.com';
+    const BASE_URL = 'http://api.brewerydb.com/v2';
 
     const GET = 'GET';
     const POST = 'POST';

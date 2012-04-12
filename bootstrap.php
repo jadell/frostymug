@@ -44,17 +44,12 @@ $app['neo4j'] = $app->share(function ($app) {
 });
 
 $app['brewerydb'] = $app->share(function ($app) {
-	$apiKey = 'A1029384756B';
-	// return new Pintlabs_Service_Brewerydb(getenv('BREWERYDB_API_KEY'));
-	return new Pintlabs_Service_Brewerydb($apiKey);
+	return new Pintlabs_Service_Brewerydb(getenv('BREWERYDB_API_KEY'));
 });
 
 // Register controllers
-// Beerme\Controller\WebUi::register($app);
-// Beerme\Controller\BeerApi::register($app);
-$app->get('/', function () {
-	return "FrostyMug is down for maintenance. Please try again later.";
-});
+Beerme\Controller\WebUi::register($app);
+Beerme\Controller\BeerApi::register($app);
 
 function dump()
 {
