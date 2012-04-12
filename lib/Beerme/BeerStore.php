@@ -328,6 +328,7 @@ GREMLIN;
 			'id' => $beerData['id'],
 			'name' => $beerData['name'],
 			'description' => isset($beerData['description']) ? $beerData['description'] : null,
+			'icon' => isset($beerData['labels']['icon']) ? $beerData['labels']['icon'] : null,
 		);
 
 		$client = $this->neo4j;
@@ -363,6 +364,7 @@ GREMLIN;
 		$properties = array(
 			'id' => $breweryData['id'],
 			'name' => $breweryData['name'],
+			'description' => isset($breweryData['description']) ? $breweryData['description'] : null,
 			'icon' => isset($breweryData['images']['icon']) ? $breweryData['images']['icon'] : null,
 		);
 
