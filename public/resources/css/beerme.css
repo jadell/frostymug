@@ -96,37 +96,6 @@ a.powered-by.blue {
 	clear: both;
 }
 
-.ui-autocomplete.ui-menu {
-	background: #dfdfdd;
-	border: 1px solid #b8a270;
-	border-radius: 5px;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;
-	box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
-		-webkit-box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
-		-moz-box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
-	list-style: none;
-	padding: 8px;
-	width: 300px;
-}
-.ui-menu-item {
-	font-size: small;
-	margin-bottom: 2px;
-	padding: 3px;
-}
-.ui-menu-item a {
-	border: 1px solid #dfdfdd;
-	border-radius: 5px;
-		-moz-border-radius: 5px;
-		-webkit-border-radius: 5px;
-	font-size: small;
-	padding: 3px;
-	width: 100%;
-}
-.ui-state-hover  {
-	background: #b8a270;
-}
-
 .beer-data {
 	border: 1px solid #b8a270;
 	border-radius: 15px;
@@ -231,3 +200,34 @@ div.star-rating {
 .stars a.rating-none { background-position: -96px 0; width: 24px; }
 .stars a.rating-none.rating-current,
 .stars a.rating-none.rating-hover { background-position: -72px 0; }
+
+/** Modal **/
+.ui-widget-overlay {
+	background: rgba(50, 50, 50, 0.5);
+	left: 0;
+	position: absolute;
+	top: 0;
+}
+.ui-dialog-titlebar-close {
+	display: none;
+	visibility: hidden;
+}
+.ui-dialog {
+	background-color: #dfdfdd;
+	border: 2px solid #b8a270;
+	border-radius: 15px;
+		-moz-border-radius: 15px;
+		-webkit-border-radius: 15px;
+	padding: 8px;
+
+}
+.ui-dialog-titlebar {
+	border-bottom: 1px solid #ccc;
+	font-size: x-small;
+	padding-bottom: 6px;
+}
+.ui-button {
+	font-size: medium;
+	margin-right: 8px;
+	padding: 5px 10px;
+}

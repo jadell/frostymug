@@ -110,7 +110,12 @@ $('document').ready(function() {
 			});
 		$ratingForm = $filled.find('.beer-rating-form');
 		if (!loggedInAs) {
-			$ratingForm.hide();
+			$ratingForm.submit(function (e) {
+				$('#login-form input[name="beer_id"]').val(beer.id);
+				$('#login-form input[name="rating"]').val($(this).find('input:radio:checked').val());
+				$('#login-ask').dialog('open');
+				return false;
+			});
 		} else {
 			$ratingForm.submit(function (e) {
 				$.post('/api/beer/'+beer.id+'/rating/'+loggedInAs, {
@@ -118,10 +123,10 @@ $('document').ready(function() {
 				});
 				return false;
 			});
-			$ratingForm.find('input:radio[value='+beer.rating.rated+']').attr('checked', true);
-			$ratingForm.find('input:radio[value='+beer.rating.estimated+']').attr('data-estimated', true);
-			starRating.create($ratingForm);
 		}
+		$ratingForm.find('input:radio[value='+beer.rating.rated+']').attr('checked', true);
+		$ratingForm.find('input:radio[value='+beer.rating.estimated+']').attr('data-estimated', true);
+		starRating.create($ratingForm);
 		$(this).append($filled);
 	};
 
@@ -131,37 +136,8 @@ $('document').ready(function() {
 		}
 	}
 
-	var autoCompleteCache = {};
-	$('#search-term').autocomplete({
-		source : function (request, responseCallback) {
-			var term = request.term;
-			if (term in autoCompleteCache) {
-				responseCallback(autoCompleteCache[term]);
-				return;
-			}
-			$.getJSON('/api/beer/search/name/'+encodeURI(term), function (result) {
-				autoCompleteCache[term] = result;
-				responseCallback(result);
-			});
-		}
-	,	select : function () {
-			$('#search-button').click();
-		}
-	,	search : function () {
-			if (latestSearch != 0) {
-				return false;
-			}
-		}
-	,	delay : 300
-	,	minLength : 3
-	,	position : {
-			offset : "0 3"
-		}
-	});
-
 	$('#search-button').click(function (e) {
 		e.preventDefault();
-		$('#search-term').autocomplete('close');
 		var searchTerm = $('#search-term').val().trim() || ' ';
 		var currentSearch = latestSearch = latestSearch + 1;
 
@@ -217,5 +193,29 @@ $('document').ready(function() {
 			$.each(results, handleBeerResult($searchResults));
 		});
 	});
+
+	$('#login-ask').dialog({
+		autoOpen: false
+	,	buttons: {
+			'Ok': function () {
+				$(this).dialog('close');
+				$('#login-form').submit();
+			}
+		,	'No, Thanks': function () {
+				$('#login-form input[name="beer_id"]').val(null);
+				$('#login-form input[name="rating"]').val(null);
+				$(this).dialog('close');
+			}
+		}
+	,	draggable: false
+	,	modal: true
+	,	resizable: false
+	});
+	$('.ui-widget-overlay').live('click', function () {
+		$('.ui-widget-overlay').siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+	});
+
+	// Perform that last search again
+	$('#search-term').val() && $('#search-button').click();
 
 });

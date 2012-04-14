@@ -9,6 +9,10 @@
 	<link rel="stylesheet" type="text/css" href="resources/css/beerme.css" />
 <body>
 
+<div id="login-ask" title="Log In to Rate?">
+	<p>You must be logged in to save a rating. Do you wish to log in now?</p>
+</div>
+
 <div id="main">
 	<div id="head">
 		<?php if ($user) : ?>
@@ -19,6 +23,8 @@
 		<?php else : ?>
 			<form id="login-form" action="/login" method="POST">
 				<input type="hidden" name="openid_identifier" value="https://www.google.com/accounts/o8/id" />
+				<input type="hidden" name="beer_id" />
+				<input type="hidden" name="rating" />
 				<button type="submit">Login with Google</button>
 			</form>
 		<?php endif; ?>

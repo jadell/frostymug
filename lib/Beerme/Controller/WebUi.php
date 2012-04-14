@@ -31,6 +31,9 @@ class WebUi
 		$app->post('/login', function (Request $request) use ($app) {
 			$identifier = $request->get('openid_identifier');
 			try {
+				$app['session']->set('loginBeerId', $request->get('beer_id'));
+				$app['session']->set('loginRating', $request->get('rating'));
+
 				$openId = new LightOpenID($_SERVER['HTTP_HOST']);
 				$openId->identity = $identifier;
 				$openId->required = array('contact/email');
@@ -60,6 +63,15 @@ class WebUi
 				if ($user) {
 					$app['session']->start();
 					$app['session']->set('user', $user->toApi());
+
+					// Did we log in from a rating?
+					$beerId = $app['session']->get('loginBeerId');
+					$rating = $app['session']->get('loginRating');
+					if ($beerId) {
+						$beer = $app['beerStore']->getBeer($beerId);
+						$app['beerStore']->rateBeer($user, $beer, $rating);
+					}
+
 					return $app->redirect('/');
 				}
 
