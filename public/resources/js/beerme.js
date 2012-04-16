@@ -194,6 +194,12 @@ $('document').ready(function() {
 		});
 	});
 
+	// Clear the login rating form
+	var clearLoginRating = function () {
+		$('#login-form input[name="beer_id"]').val(null);
+		$('#login-form input[name="rating"]').val(null);
+	};
+
 	$('#login-ask').dialog({
 		autoOpen: false
 	,	buttons: {
@@ -202,8 +208,7 @@ $('document').ready(function() {
 				$('#login-form').submit();
 			}
 		,	'No, Thanks': function () {
-				$('#login-form input[name="beer_id"]').val(null);
-				$('#login-form input[name="rating"]').val(null);
+				clearLoginRating();
 				$(this).dialog('close');
 			}
 		}
@@ -212,6 +217,7 @@ $('document').ready(function() {
 	,	resizable: false
 	});
 	$('.ui-widget-overlay').live('click', function () {
+		clearLoginRating();
 		$('.ui-widget-overlay').siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
 	});
 
