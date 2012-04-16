@@ -1,6 +1,6 @@
 html,
 body {
-	background : #FFFFFF;
+	background : #dddddd;
 	height: 100%;
 	font-family: Verdana, Arial, sans-serif;
 	margin: 0;
@@ -8,9 +8,14 @@ body {
 }
 
 #main {
+	background : #FFFFFF;
+	border-left: 2px solid #b8a270;
+	border-right: 2px solid #b8a270;
+	margin-left: auto;
+	margin-right: auto;
 	min-height: 100%;
 	position: relative;
-	width: 100%;
+	width: 80%;
 }
 
 #header {
@@ -22,24 +27,25 @@ body {
 
 #content {
 	padding-bottom: 54px;
+	padding-left: 8px;
+	padding-right: 8px;
 	width: 100%;
 }
 
 #footer {
-	position: absolute;
 	bottom: 0;
 	height: 56px;
+	position: absolute;
+	text-align: right;
 	width: 100%;
 }
 
 #search-form {
-	margin-left: 10px;
+	m/argin-left: 10px;
 }
 #logout-form {
-	margin-right: 10px;
+	m/argin-right: 10px;
 }
-
-
 
 #login-form,
 #logout-form {
@@ -69,19 +75,14 @@ button {
 	text-decoration: none;
 }
 
-
-
 a.powered-by {
 	border-radius: 15px;
 		-moz-border-radius: 15px;
 		-webkit-border-radius: 15px;
 	color: transparent;
-	display: block;
-	float: right;
-	margin-left: 6px;
-	position: relative;
+	display: inline-block;
+	margin-right: 8px;
 	height: 50px;
-	right: 10px;
 	width: 200px;
 }
 a.powered-by img {
