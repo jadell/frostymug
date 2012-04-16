@@ -14,7 +14,8 @@
 </div>
 
 <div id="main">
-	<div id="head">
+
+	<div id="header">
 		<?php if ($user) : ?>
 			<div id="logout-form">
 				<span class="logged-in-as"><?php echo $user['email']; ?></span>
@@ -48,20 +49,17 @@
 			<p>Keep track of the beers you've rated with "My Ratings".</p>
 		</div>
 	</div>
-
 	<div class="clear"></div>
+
+	<div id="footer">
+		<a class="powered-by grey" href="http://www.brewerydb.com/">
+			<img src="/resources/images/Powered-By-BreweryDB.png" title="Powered By BreweryDB.com" alt="Powered By BreweryDB.com">
+		</a>
+		<a class="powered-by blue" href="http://neo4j.org/">
+			<img src="/resources/images/neo4j-clear-small-Enterprise.png" title="Powered By Neo4j" alt="Powered By Neo4j">
+		</a>
+	</div>
 </div>
-
-<div id="footer">
-	<a class="powered-by grey" href="http://www.brewerydb.com/">
-		<img src="/resources/images/Powered-By-BreweryDB.png" title="Powered By BreweryDB.com" alt="Powered By BreweryDB.com">
-	</a>
-	<a class="powered-by blue" href="http://neo4j.org/">
-		<img src="/resources/images/neo4j-clear-small-Enterprise.png" title="Powered By Neo4j" alt="Powered By Neo4j">
-	</a>
-</div>
-
-
 </body>
 
 <script type="text/template" id="beer-data-template">

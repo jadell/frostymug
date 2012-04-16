@@ -216,6 +216,6 @@ $('document').ready(function() {
 	});
 
 	// Perform that last search again
-	$('#search-term').val() && $('#search-button').click();
+//	$('#search-term').val() && $('#search-button').click();
 
 });

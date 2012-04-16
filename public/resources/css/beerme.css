@@ -1,40 +1,45 @@
-html {
-	background : url('/resources/images/site-background.jpg');
-	height: 100%;
-}
-
+html,
 body {
+	background : #FFFFFF;
+	height: 100%;
 	font-family: Verdana, Arial, sans-serif;
-	height: 93%;
+	margin: 0;
+	padding: 0;
 }
 
 #main {
-	background-color: #dfdfdd;
-	border: 2px solid #b8a270;
-	border-radius: 15px;
-		-moz-border-radius: 15px;
-		-webkit-border-radius: 15px;
-	margin-bottom: 8px;
-	margin-left: auto;
-	margin-right: auto;
-	min-height: 95%;
-	padding: 10px;
-	width: 890px;
-
+	min-height: 100%;
+	position: relative;
+	width: 100%;
 }
 
-#footer {
-	margin-left: auto;
-	margin-right: auto;
-	padding: 0 10px;
-	width: 890px;
+#header {
+	background: #E0DA99;
+	border-bottom: 2px solid #b8a270;
+	padding: 8px 0px;
+	width: 100%;
 }
 
 #content {
-	border-top: 1px solid #ccc;
-	margin-top: 10px;
-	padding-top: 6px;
+	padding-bottom: 54px;
+	width: 100%;
 }
+
+#footer {
+	position: absolute;
+	bottom: 0;
+	height: 56px;
+	width: 100%;
+}
+
+#search-form {
+	margin-left: 10px;
+}
+#logout-form {
+	margin-right: 10px;
+}
+
+
 
 #login-form,
 #logout-form {
@@ -76,7 +81,7 @@ a.powered-by {
 	margin-left: 6px;
 	position: relative;
 	height: 50px;
-	right: -12px;
+	right: 10px;
 	width: 200px;
 }
 a.powered-by img {
