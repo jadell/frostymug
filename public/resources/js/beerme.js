@@ -138,7 +138,7 @@ $('document').ready(function() {
 		var searchTerm = $('input[name="search-term"]').val().trim() || ' ';
 		var currentSearch = latestSearch = latestSearch + 1;
 
-//		$searchResults.empty().append(render('wait-template'));
+		$searchResults.empty().append(render('wait-template'));
 		$.getJSON('/api/beer/search/'+encodeURI(searchTerm), function (results) {
 			if (currentSearch != latestSearch) {
 				return;
@@ -146,7 +146,7 @@ $('document').ready(function() {
 
 			$searchResults.empty();
 			if (results.length < 1) {
-				// $searchResults.append(render('no-results-template'));
+				$searchResults.append(render('no-results-template'));
 				return;
 			}
 
@@ -154,9 +154,8 @@ $('document').ready(function() {
 			latestSearch = 0
 		});
 	});
-//*/
-/*
-	$('#my-ratings-button').click(function (e) {
+
+	$('a[href="#my-ratings"]').click(function (e) {
 		e.preventDefault();
 		if (!loggedInAs) {
 			return false;
@@ -173,8 +172,8 @@ $('document').ready(function() {
 			$.each(results, handleBeerResult($searchResults));
 		});
 	});
-/*
-	$('#my-recommendations-button').click(function (e) {
+
+	$('a[href="#recommendations"]').click(function (e) {
 		e.preventDefault();
 		if (!loggedInAs) {
 			return false;
@@ -191,7 +190,6 @@ $('document').ready(function() {
 			$.each(results, handleBeerResult($searchResults));
 		});
 	});
-//*/
 
 	$('#login-ask').on('hide', function () {
 		$('#login-form input[name="beer_id"]').val(null);
@@ -203,5 +201,4 @@ $('document').ready(function() {
 
 	// Perform that last search again
 //	$('#search-term').val() && $('#search-button').click();
-//*/
 });

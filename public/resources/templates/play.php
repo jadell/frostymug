@@ -31,7 +31,7 @@
 						<span class="icon-bar"></span>
 					</a>
 
-					<a class="brand" href="#">Frosty Mug</a>
+					<a class="brand" href="/">FrostyMug</a>
 
 					<form id="beer-search-form" class="form-search">
 						<input type="text" name="search-term" class="input-medium search-query" placeholder="Search for beers" value="<?php echo $lastSearch; ?>"/>
@@ -73,6 +73,11 @@
 
 		<div class="container">
 			<div id="search-results">
+				<h2>Welcome to FrostyMug!</h2>
+				<p>Use the search box to find your favorite beers or explore new ones.</p>
+				<p>Log in with your Google account to start rating the beers you discover.</p>
+				<p>Get new recommendations with <a href="#recommendations">Recommendations</a>.</p>
+				<p>Keep track of the beers you've rated with <a href="#my-ratings">My Ratings</a>.</p>
 			</div>
 
 			<footer>
@@ -102,10 +107,10 @@
 
 		<div class="modal hide fade" id="about" style="display:none;">
 			<div class="modal-header">
-				About Frosty Mug
+				About FrostyMug
 			</div>
 			<div class="modal-body">
-				<p>Frosty Mug is a simple, easy-to-use way to keep track of your favorite beers and get recommendations for new brews to try.</p>
+				<p>FrostyMug is a simple, easy-to-use way to keep track of your favorite beers and get recommendations about new brews to try.</p>
 				<a class="powered-by blue" href="http://neo4j.org/">
 					<img src="resources/images/neo4j-clear-small-Enterprise.png" title="Powered By Neo4j" alt="Powered By Neo4j">
 				</a>
@@ -114,7 +119,7 @@
 				</a>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> Close</button>
 			</div>
 		</div>
 
@@ -151,4 +156,39 @@
 			</form>
 		</div>
 	</script>
+
+	<script type="text/template" id="wait-template">
+		<div class="wait">Please wait...</div>
+	</script>
+
+	<script type="text/template" id="no-results-template">
+		<div class="result no-results">No results matched your search.</div>
+	</script>
+
+	<script type="text/template" id="no-recommendations-template">
+		<div class="result no-recommendations">
+			<h2>Sorry, we can&apos;t recommend any beers to you right now.</h2>
+			<p>
+				There may be a few reasons for this.
+				<ul>
+					<li>
+						<p class="reason">Maybe: You haven&apos;t rated enough beers.</p>
+						<p>Recommendations are based off of your own ratings of beers you have tried.
+						If you haven&apos;t rated enough beers, we can&apos;t determine your tastes
+						well enough to give you good recommendations.</p>
+						<p class="solution">Solution: Rate more beers!</p>
+					</li>
+					<li>
+						<p class="reason">Maybe: We couldn&apos;t find other users similar to you.</p>
+						<p>We look for other users who have the same taste in beer as you, and
+						find things they like that you haven&apos;t tried. If no other users are close
+						enough to your tastes, we can&apos;t give you good recommendations.</p>
+						<p class="solution">Solution: Get your friends and drinking buddies
+						to sign up and rate beers!</p>
+					</li>
+				</ul>
+			</p>
+		</div>
+	</script>
+
 </html>
