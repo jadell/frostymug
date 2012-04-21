@@ -1,0 +1,166 @@
+body {
+	padding-top: 60px;
+	padding-bottom: 40px;
+}
+
+.navbar form {
+	margin-bottom: 0;
+}
+
+.nav > li > span {
+	display: block;
+}
+.navbar .nav > li > span {
+	float: none;
+	padding: 10px 10px 11px;
+	line-height: 19px;
+	color: #999;
+	text-decoration: none;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+#beer-search-form {
+	float: right;
+}
+
+#beer-search-form input[type="text"] {
+	margin-top: 5px;
+}
+
+footer {
+	border: 0;
+	border-top: 1px solid #eee;
+	margin-top: 18px;
+	padding-top: 18px;
+	text-align: right;
+}
+
+a.powered-by {
+	border-radius: 8px;
+		-moz-border-radius: 8px;
+		-webkit-border-radius: 8px;
+	color: transparent;
+	display: inline-block;
+	float: right;
+	margin-left: 6px;
+	height: 30px;
+	width: 120px;
+}
+a.powered-by img {
+	height: 30px;
+	width: 120px;
+}
+a.powered-by.grey {
+	background-color: #dfdfdd;
+	border: 2px solid #b8a270;
+}
+a.powered-by.blue {
+	background-color: #15708e;
+	border: 2px solid #b1cad2;
+}
+
+/** Beer data card **/
+.beer-data {
+	border: 1px solid #b8a270;
+	border-radius: 15px;
+		-moz-border-radius: 15px;
+		-webkit-border-radius: 15px;
+	box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
+		-webkit-box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
+		-moz-box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
+	display: inline-block;
+	height: 92px;
+	margin: 10px 10px;
+	overflow: hidden;
+	padding: 8px;
+	width: 183px;
+}
+
+.beer-info {
+	height: 3.9em;
+	overflow: hidden;
+}
+
+.beer-rating-form {
+	clear: both;
+	padding-top: 4px;
+}
+
+.beer-data-name {
+	font-size: small;
+	font-weight: bold;
+	margin-left: 54px;
+	margin-top: 1px;
+}
+
+.beer-data-brewery-name {
+	font-size: xx-small;
+	margin-left: 54px;
+}
+
+.beer-data img {
+	border-radius: 15px;
+		-moz-border-radius: 15px;
+		-webkit-border-radius: 15px;
+	height: 48px;
+	width: 48px;
+}
+
+.beer-data .image-wrap {
+	border-radius: 15px;
+		-moz-border-radius: 15px;
+		-webkit-border-radius: 15px;
+	box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
+		-webkit-box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
+		-moz-box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
+	display: inline-block;
+	float: left;
+	height: 48px;
+	position: relative;
+	width: 48px;
+}
+
+.beer-data .image-wrap.glossy:after {
+	background: linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,.1) 100%);
+	background: -moz-linear-gradient(top, rgba(255,255,255,0.7) 0%, rgba(255,255,255,.1) 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.7)), color-stop(100%,rgba(255,255,255,.1)));
+	border-radius: 15px;
+		-webkit-border-radius: 15px;
+		-moz-border-radius: 15px;
+	content: ' ';
+	height: 50%;
+	left: 0;
+	position: absolute;
+	top: 0;
+	width: 100%;
+}
+
+/** Star rating form **/
+div.star-rating {
+	background: #b8a270;
+	border: 1px solid #ccc;
+	border-radius: 15px;
+		-moz-border-radius: 15px;
+		-webkit-border-radius: 15px;
+	padding: 2px;
+	text-align: center;
+	width: 146px;
+}
+.stars div a {
+	background: transparent url('/resources/images/star_sprite.png') 0 0 no-repeat;
+	display: inline-block;
+	height: 24px;
+	overflow: hidden;
+	text-indent: -999em;
+	width: 12px;
+}
+.stars a.right { background-position: -12px 0; }
+.stars a.estimate { background-position: -24px 0; }
+.stars a.estimate.right { background-position: -36px 0; }
+.stars a.rating { background-position: -48px 0; }
+.stars a.rating.right { background-position: -60px 0; }
+.stars a.rating-over { background-position: -48px 0; }
+.stars a.rating-over.right { background-position: -60px 0; }
+.stars a.rating-none { background-position: -96px 0; width: 24px; }
+.stars a.rating-none.rating-current,
+.stars a.rating-none.rating-hover { background-position: -72px 0; }

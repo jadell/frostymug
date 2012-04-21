@@ -22,7 +22,7 @@ class WebUi
 		});
 
 		$app->get('/', function () use ($app) {
-			return WebUi::render($app['templateDir'].'/main.php', array(
+			return WebUi::render($app['templateDir'].'/play.php', array(
 				'user' => $app['session']->get('user'),
 				'lastSearch' => $app['session']->get('lastSearch'),
 			));

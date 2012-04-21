@@ -2,10 +2,10 @@ $('document').ready(function() {
 
 	var $searchResults = $('#search-results');
 	var latestSearch = 0;
-	var loggedInAs = $('span.logged-in-as').text();
+	var loggedInAs = $('.logged-in-as').text();
 
 	var templateCache = {};
-	var fillTemplate = function (templateName, data) {
+	var render = function (templateName, data) {
 		data = data || {};
 		if (templateName in templateCache) {
 			var tmpl = templateCache[templateName];
@@ -13,10 +13,8 @@ $('document').ready(function() {
 			var tmpl = $('#'+templateName).html();
 			templateCache[templateName] = tmpl;
 		}
-		$.each(data, function (key, value) {
-			tmpl = tmpl.replace(new RegExp('<%'+key+'%>', 'g'), value);
-		});
-		return $(tmpl);
+
+		return $($.mustache(tmpl, data));
 	};
 
 	var starRating = {
@@ -95,7 +93,7 @@ $('document').ready(function() {
 	};
 
 	var addBeerTemplate = function (beer) {
-		var $filled = fillTemplate('beer-data-template', {
+		var $filled = render('beer-data-template', {
 			id : beer.id
 		,	name : beer.name
 		,	description : beer.description || ''
@@ -113,7 +111,7 @@ $('document').ready(function() {
 			$ratingForm.submit(function (e) {
 				$('#login-form input[name="beer_id"]').val(beer.id);
 				$('#login-form input[name="rating"]').val($(this).find('input:radio:checked').val());
-				$('#login-ask').dialog('open');
+				$('#login-ask').modal();
 				return false;
 			});
 		} else {
@@ -135,13 +133,12 @@ $('document').ready(function() {
 			addBeerTemplate.call(container, beer);
 		}
 	}
-
-	$('#search-button').click(function (e) {
+	$('#beer-search-form').submit(function (e) {
 		e.preventDefault();
-		var searchTerm = $('#search-term').val().trim() || ' ';
+		var searchTerm = $('input[name="search-term"]').val().trim() || ' ';
 		var currentSearch = latestSearch = latestSearch + 1;
 
-		$searchResults.empty().append(fillTemplate('wait-template'));
+//		$searchResults.empty().append(render('wait-template'));
 		$.getJSON('/api/beer/search/'+encodeURI(searchTerm), function (results) {
 			if (currentSearch != latestSearch) {
 				return;
@@ -149,7 +146,7 @@ $('document').ready(function() {
 
 			$searchResults.empty();
 			if (results.length < 1) {
-				$searchResults.append(fillTemplate('no-results-template'));
+				// $searchResults.append(render('no-results-template'));
 				return;
 			}
 
@@ -157,71 +154,54 @@ $('document').ready(function() {
 			latestSearch = 0
 		});
 	});
-
+//*/
+/*
 	$('#my-ratings-button').click(function (e) {
 		e.preventDefault();
 		if (!loggedInAs) {
 			return false;
 		}
-		$searchResults.empty().append(fillTemplate('wait-template'));
+		$searchResults.empty().append(render('wait-template'));
 
 		$.getJSON('/api/beer/ratings/'+loggedInAs, function (results) {
 			$searchResults.empty();
 			if (results.length < 1) {
-				$searchResults.append(fillTemplate('no-results-template'));
+				$searchResults.append(render('no-results-template'));
 				return;
 			}
 
 			$.each(results, handleBeerResult($searchResults));
 		});
 	});
-
+/*
 	$('#my-recommendations-button').click(function (e) {
 		e.preventDefault();
 		if (!loggedInAs) {
 			return false;
 		}
-		$searchResults.empty().append(fillTemplate('wait-template'));
+		$searchResults.empty().append(render('wait-template'));
 
 		$.getJSON('/api/beer/recommendations/'+loggedInAs, function (results) {
 			$searchResults.empty();
 			if (results.length < 1) {
-				$searchResults.append(fillTemplate('no-recommendations-template'));
+				$searchResults.append(render('no-recommendations-template'));
 				return;
 			}
 
 			$.each(results, handleBeerResult($searchResults));
 		});
 	});
+//*/
 
-	// Clear the login rating form
-	var clearLoginRating = function () {
+	$('#login-ask').on('hide', function () {
 		$('#login-form input[name="beer_id"]').val(null);
 		$('#login-form input[name="rating"]').val(null);
-	};
-
-	$('#login-ask').dialog({
-		autoOpen: false
-	,	buttons: {
-			'Ok': function () {
-				$(this).dialog('close');
-				$('#login-form').submit();
-			}
-		,	'No, Thanks': function () {
-				clearLoginRating();
-				$(this).dialog('close');
-			}
-		}
-	,	draggable: false
-	,	modal: true
-	,	resizable: false
 	});
-	$('.ui-widget-overlay').live('click', function () {
-		clearLoginRating();
-		$('.ui-widget-overlay').siblings('.ui-dialog').find('.ui-dialog-content').dialog('close');
+	$('#login-ask button.btn-primary').click(function () {
+		$('#login-form').submit();
 	});
 
 	// Perform that last search again
 //	$('#search-term').val() && $('#search-button').click();
-
+//*/
 });
