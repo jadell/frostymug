@@ -77,13 +77,14 @@ class BeerStore
 		$gremlin = <<<GREMLIN
 		m=[:].withDefault{[0,0]};
 		r=[:].withDefault{[0,0]};
+		a=[]
 		user=g.v(userId);
 		user.outE("RATED").sideEffect{w=it.getProperty('rating')}
-		        .inV.inE("RATED").outV.except([user]).back(2)
+		        .inV.inE("RATED").aggregate(a).outV.except([user]).back(2)
 		        .sideEffect{diff=Math.abs(it.getProperty('rating')-w)}
 		        .outV.sideEffect{ me=m[it.id]; me[0]++; me[1]+=diff; }.iterate();
 		m.findAll{it.value[1]/it.value[0] <= 2}.collect{g.v(it.key)}._()
-		        .outE("RATED").sideEffect{rating=it.rating}.inV
+		        .outE("RATED").except(a).sideEffect{rating=it.rating}.inV
 		        .sideEffect{me=r[it.id]; me[0]++; me[1]+=rating; }.iterate();
 		r.collectEntries{key, value -> [key , value[1]/value[0]]}
 				.findAll{it.value > 5}
