@@ -95,13 +95,14 @@ $('document').ready(function() {
 	};
 
 	var addBeerTemplate = function (beer) {
+		var icon = (beer.icon || beer.brewery.icon || '/resources/images/beer-default.png').replace(/^https?/, 'https');
 		var $filled = fillTemplate('beer-data-template', {
 			id : beer.id
 		,	name : beer.name
 		,	description : beer.description || ''
 		,	breweryName : beer.brewery.name
 		,	breweryId : beer.brewery.id
-		,	icon : beer.icon || beer.brewery.icon || '/resources/images/beer-default.png'
+		,	icon : icon
 		});
 		$filled.find('img.label-image')
 			.addClass(beer.brewery.icon ? 'glossy' : '')
