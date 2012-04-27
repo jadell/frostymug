@@ -62,19 +62,19 @@ a.powered-by.blue {
 
 /** Beer data card **/
 .beer-data {
-	b/order: 1px solid #b8a270;
-	b/order-radius: 15px;
-		-m/oz-border-radius: 15px;
-		-w/ebkit-border-radius: 15px;
-	b/ox-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
-		-w/ebkit-box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
-		-m/oz-box-shadow: 1px 1px 10px -2px rgba(50, 50, 50, 0.5);
-	d/isplay: inline-block;
-	h/eight: 92px;
-	m/argin: 10px 10px;
-	o/verflow: hidden;
-	p/adding: 8px;
-	w/idth: 183px;
+	border: 1px solid #999;
+	border-radius: 4px;
+		-moz-border-radius: 4px;
+		-webkit-border-radius: 4px;
+	box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
+		-webkit-box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
+		-moz-box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
+	display: inline-block;
+	height: 140px;
+	margin: 0 8px 14px 8px;
+	overflow: hidden;
+	padding: 10px;
+	width: 275px;
 }
 
 .beer-info {
