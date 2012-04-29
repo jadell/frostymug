@@ -70,44 +70,33 @@ a.powered-by.blue {
 		-webkit-box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
 		-moz-box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
 	display: inline-block;
-	height: 140px;
-	margin: 0 8px 14px 8px;
+	margin: 0 16px 14px 0;
 	overflow: hidden;
 	padding: 10px;
-	width: 275px;
-}
-
-.beer-info {
-	h/eight: 3.9em;
-	o/verflow: hidden;
+	width: 432px;
 }
 
 .beer-rating-form {
-	c/lear: both;
-	p/adding-top: 4px;
+	background: #b8a270;
+	border-radius: 4px;
+		-moz-border-radius: 4px;
+		-webkit-border-radius: 4px;
+	margin: 5px 0 0 72px;
+	width: 145px;
 }
 
 .beer-data-name {
-	f/ont-size: small;
-	f/ont-weight: bold;
-	m/argin-left: 54px;
-	m/argin-top: 1px;
+	font-size: medium;
+	font-weight: bold;
+	margin-left: 72px;
 }
 
 .beer-data-brewery-name {
-	f/ont-size: xx-small;
-	m/argin-left: 54px;
+	font-size: small;
+	margin-left: 72px;
 }
 
 .beer-data img {
-	border-radius: 8px;
-		-moz-border-radius: 8px;
-		-webkit-border-radius: 8px;
-	height: 64px;
-	width: 64px;
-}
-
-.beer-data .image-wrap {
 	border-radius: 8px;
 		-moz-border-radius: 8px;
 		-webkit-border-radius: 8px;
@@ -115,38 +104,37 @@ a.powered-by.blue {
 		-webkit-box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
 		-moz-box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
 	display: inline-block;
-	f/loat: left;
+	float: left;
 	height: 64px;
-	position: relative;
+	margin-right: 8px;
 	width: 64px;
 }
 
-.beer-data .image-wrap.glossy:after {
-	background: linear-gradient(top, rgba(255,255,255,0.7) 0%,rgba(255,255,255,.1) 100%);
-	background: -moz-linear-gradient(top, rgba(255,255,255,0.7) 0%, rgba(255,255,255,.1) 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.7)), color-stop(100%,rgba(255,255,255,.1)));
-	border-radius: 8px;
-		-webkit-border-radius: 8px;
-		-moz-border-radius: 8px;
-	content: ' ';
-	height: 50%;
-	left: 0;
-	position: absolute;
-	top: 0;
-	width: 100%;
+div.beer-data-more-info {
+	display: none;
+}
+
+div.beer-data-more-info div {
+	margin-top: 10px;
+}
+
+div.beer-data-more-info label {
+	color: #999;
+	font-size: small;
+	font-weight: bold;
+}
+
+a.beer-data-link {
+	float: right;
+	position: relative;
+	top: 14px;
+}
+
+a.beer-data-less {
+	display: none;
 }
 
 /** Star rating form **/
-div.star-rating {
-	background: #b8a270;
-	border: 1px solid #ccc;
-	border-radius: 15px;
-		-moz-border-radius: 15px;
-		-webkit-border-radius: 15px;
-	padding: 2px;
-	text-align: center;
-	width: 146px;
-}
 .stars div a {
 	background: transparent url('/resources/images/star_sprite.png') 0 0 no-repeat;
 	display: inline-block;

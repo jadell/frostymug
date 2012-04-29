@@ -132,11 +132,11 @@
 
 	<script type="text/template" id="beer-data-template">
 		<div class="beer-data">
-			<div class="beer-info" title="{{name}} - {{breweryName}}">
-				<img src="{{icon}}" class="label-image" title="{{description}}" alt="{{name}} by {{breweryName}}"/>
-				<div class="beer-data-name">{{name}}</div>
-				<div class="beer-data-brewery-name">{{breweryName}}</div>
-			</div>
+			<img src="{{icon}}" class="label-image" title="{{name}} by {{breweryName}}" alt="{{name}} by {{breweryName}}"/>
+			<div class="beer-data-name">{{name}}</div>
+			<div class="beer-data-brewery-name">{{breweryName}}</div>
+			<a class="beer-data-link beer-data-more">more</a>
+			<a class="beer-data-link beer-data-less">less</a>
 			<form class="beer-rating-form" method="POST">
 				<input type="hidden" class="beer-id" value="{{id}}" />
 				<div class="stars">
@@ -154,6 +154,26 @@
 				</div>
 				<button>Rate</button>
 			</form>
+			<div class="beer-data-more-info">
+				<div class="beer-data-description">
+					<label>Beer Description</label>
+					{{#description}}
+						{{description}}
+					{{/description}}
+					{{^description}}
+						<em>None</em>
+					{{/description}}
+				</div>
+				<div class="beer-data-brewery-description">
+					<label>About the Brewery</label>
+					{{#breweryDescription}}
+						{{breweryDescription}}
+					{{/breweryDescription}}
+					{{^breweryDescription}}
+						<em>None</em>
+					{{/breweryDescription}}
+				</div>
+			</div>
 		</div>
 	</script>
 
