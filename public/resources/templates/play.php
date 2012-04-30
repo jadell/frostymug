@@ -111,16 +111,21 @@
 			</div>
 			<div class="modal-body">
 				<p>FrostyMug is a simple, easy-to-use way to keep track of your favorite beers and get recommendations about new brews to try.</p>
-				<a class="powered-by blue" href="http://neo4j.org/">
+				<a class="powered-by blue" href="http://neo4j.org/" target="__blank">
 					<img src="resources/images/neo4j-clear-small-Enterprise.png" title="Powered By Neo4j" alt="Powered By Neo4j">
 				</a>
-				<a class="powered-by grey" href="http://www.brewerydb.com/">
+				<a class="powered-by grey" href="http://www.brewerydb.com/" target="__blank">
 					<img src="resources/images/Powered-By-BreweryDB.png" title="Powered By BreweryDB.com" alt="Powered By BreweryDB.com">
 				</a>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn" data-dismiss="modal"><i class="icon-remove"></i> Close</button>
 			</div>
+		</div>
+
+		<div id="feedback-container" class="side-tab-container">
+			<a class="side-tab">Feedback</a>
+			Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 		</div>
 
 		<!-- Placed at the end of the document so the pages load faster -->

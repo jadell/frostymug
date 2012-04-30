@@ -199,6 +199,34 @@ $('document').ready(function() {
 		});
 	});
 
+	$('a.side-tab:not(.side-tab-open)').live('click', function (e) {
+		e.preventDefault();
+		var $self = $(this);
+		var $container = $self.closest('div.side-tab-container');
+		var left = $container.offset().left;
+		var width = $container.innerWidth();
+
+		$container.css('left', left)
+		.animate({
+			left: left - width
+		}, function () {
+			$self.addClass('side-tab-open');
+		});
+	});
+	$('a.side-tab-open').live('click', function (e) {
+		e.preventDefault();
+		var $self = $(this);
+		var $container = $self.closest('div.side-tab-container');
+		var left = $(document).width();
+
+		$container.animate({
+			left: left
+		}, function () {
+			$container.css('left', '100%');
+			$self.removeClass('side-tab-open');
+		});
+	});
+
 	$('#login-ask').on('hide', function () {
 		$('#login-form input[name="beer_id"]').val(null);
 		$('#login-form input[name="rating"]').val(null);

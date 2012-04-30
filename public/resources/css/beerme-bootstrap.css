@@ -153,3 +153,44 @@ a.beer-data-less {
 .stars a.rating-none { background-position: -96px 0; width: 24px; }
 .stars a.rating-none.rating-current,
 .stars a.rating-none.rating-hover { background-position: -72px 0; }
+
+/** Feedback form **/
+div.side-tab-container {
+	background: #fff;
+	border: 2px solid #999;
+	border-radius: 4px;
+		-moz-border-radius: 4px;
+		-webkit-border-radius: 4px;
+	box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
+		-webkit-box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
+		-moz-box-shadow: 1px 1px 5px -1px rgba(128,128,128,.5);
+	left: 100%;
+	padding: 8px;
+	position: fixed;
+}
+
+a.side-tab {
+	background: #fff;
+	border: 2px solid #999;
+	border-bottom: 3px solid #fff;
+	border-top-left-radius: 4px;
+	border-top-right-radius: 4px;
+	box-shadow: 1px 0 5px -3px rgba(128,128,128,.5);
+		-webkit-box-shadow: 1px 0 5px -3px rgba(128,128,128,.5);
+		-moz-box-shadow: 1px 1px 0 -3px rgba(128,128,128,.5);
+	display: block;
+	font-weight: bold;
+	padding: 4px;
+	position: absolute;
+	top: 30px;
+	left: -51px;
+
+	-moz-transform: rotate(-90deg);
+	-webkit-transform: rotate(-90deg);
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+}
+
+#feedback-container {
+	top: 100px;
+	width: 700px;
+}
