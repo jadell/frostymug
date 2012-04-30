@@ -208,5 +208,5 @@ $('document').ready(function() {
 	});
 
 	// Perform that last search again
-//	$('#search-term').val() && $('#search-button').click();
+	$('input[name="search-term"]').val().trim() && $('#beer-search-form').trigger('submit');
 });
