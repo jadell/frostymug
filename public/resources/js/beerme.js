@@ -202,6 +202,7 @@ $('document').ready(function() {
 	$('a.side-tab:not(.side-tab-open)').live('click', function (e) {
 		e.preventDefault();
 		var $self = $(this);
+		$self.addClass('side-tab-open');
 		var $container = $self.closest('div.side-tab-container');
 		var left = $container.offset().left;
 		var width = $container.innerWidth();
@@ -209,8 +210,6 @@ $('document').ready(function() {
 		$container.css('left', left)
 		.animate({
 			left: left - width
-		}, function () {
-			$self.addClass('side-tab-open');
 		});
 	});
 	$('a.side-tab-open').live('click', function (e) {
@@ -225,6 +224,14 @@ $('document').ready(function() {
 			$container.css('left', '100%');
 			$self.removeClass('side-tab-open');
 		});
+	});
+	$('a[href="#contact"]').click(function (e) {
+		e.preventDefault();
+		$('a[href="#feedback"]').trigger('click');
+	});
+	$('button#feedback-cancel').click(function (e) {
+		e.preventDefault();
+		$('a[href="#feedback"]').trigger('click');
 	});
 
 	$('#login-ask').on('hide', function () {

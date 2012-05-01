@@ -34,7 +34,7 @@
 					<a class="brand" href="/">FrostyMug</a>
 
 					<form id="beer-search-form" class="form-search">
-						<input type="text" name="search-term" class="input-medium search-query" placeholder="Search for beers" value="<?php echo $lastSearch; ?>"/>
+						<input type="text" name="search-term" class="input-medium search-query" placeholder="Search for beers" value="<?php echo htmlentities($lastSearch); ?>"/>
 						<button type="submit" class="btn"><i class="icon-search"></i> Search</button>
 					</form>
 
@@ -47,7 +47,7 @@
 						<ul class="nav pull-right">
 							<li class="dropdown" id="account-dropdown">
 								<a href="#account-dropdown" class="dropdown-toggle logged-in-as" data-toggle="dropdown">
-									<?php echo $user['email']; ?>
+									<?php echo htmlentities($user['email']); ?>
 									<b class="caret"></b>
 								</a>
 								<ul class="dropdown-menu">
@@ -124,8 +124,34 @@
 		</div>
 
 		<div id="feedback-container" class="side-tab-container">
-			<a class="side-tab">Feedback</a>
-			Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+			<a href="#feedback" class="side-tab">Feedback</a>
+			<h3>Contact and Feedback</h3>
+			<form action="feedback" method="POST" class="well">
+				<label for="feedback-email">Email</label>
+				<input type="text" placeholder="Enter your email address" name="email" id="feedback-email" value="<?php echo htmlentities($user['email']); ?>" />
+				<i class="icon-question-sign" title="Your email address is provided only so that we can follow up on any feedback you give. Your email address and any associated information will never be given to third parties."></i>
+
+				<label for="feedback-how">How did you find FrostyMug?</label>
+				<input type="text" placeholder="Search, Twitter, word-of-mouth, etc." name="how" id="feedback-how" value="" />
+
+				<div class="control-group">
+					<label>Which 2 of the following features would you most like to have in FrostyMug:</label>
+					<label class="checkbox" for="feature-1"><input type="checkbox" id="feature-1" name="feedback-feature" value="social-media">Social media integration (Facebook, Twitter, etc.)</label>
+					<label class="checkbox" for="feature-2"><input type="checkbox" id="feature-2" name="feedback-feature" value="user-reviews">User reviews of beers/breweries</label>
+					<label class="checkbox" for="feature-3"><input type="checkbox" id="feature-3" name="feedback-feature" value="personal-notes">Personal notes about beers/breweries</label>
+					<label class="checkbox" for="feature-4"><input type="checkbox" id="feature-4" name="feedback-feature" value="send-to-friend">Send beer recommendations to friends</label>
+					<label class="checkbox" for="feature-o"><input type="checkbox" id="feature-o" name="feedback-feature" value="other">Other - please specify in comments</label>
+				</div>
+
+				<label for="feedback-comments">Comments</label>
+				<textarea placeholder="Anything else you'd like us to know?" name="comments" id="feedback-comments"></textarea>
+
+				<div class="control-group">
+					<button type="submit" class="btn btn-primary">Send</button>
+					<button id="feedback-cancel" type="button" class="btn">Cancel</button>
+				</div>
+			</form>
+			<p>Thank you for using FrostyMug and taking the time to let us know what you think. Your feedback is very important to us!</p>
 		</div>
 
 		<!-- Placed at the end of the document so the pages load faster -->
