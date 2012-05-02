@@ -72,6 +72,13 @@
 		</div>
 
 		<div class="container">
+			<?php if ($flashSuccess) : ?>
+			<div class="alert alert-success fade in">
+				<a class="close" data-dismiss="alert">&times;</a>
+				<?php echo $flashSuccess; ?>
+			</div>
+			<?php endif; ?>
+
 			<div id="search-results">
 				<h2>Welcome to FrostyMug!</h2>
 				<p>Use the search box to find your favorite beers or explore new ones.</p>
@@ -136,11 +143,11 @@
 
 				<div class="control-group">
 					<label>Which 2 of the following features would you most like to have in FrostyMug:</label>
-					<label class="checkbox" for="feature-1"><input type="checkbox" id="feature-1" name="feedback-feature" value="social-media">Social media integration (Facebook, Twitter, etc.)</label>
-					<label class="checkbox" for="feature-2"><input type="checkbox" id="feature-2" name="feedback-feature" value="user-reviews">User reviews of beers/breweries</label>
-					<label class="checkbox" for="feature-3"><input type="checkbox" id="feature-3" name="feedback-feature" value="personal-notes">Personal notes about beers/breweries</label>
-					<label class="checkbox" for="feature-4"><input type="checkbox" id="feature-4" name="feedback-feature" value="send-to-friend">Send beer recommendations to friends</label>
-					<label class="checkbox" for="feature-o"><input type="checkbox" id="feature-o" name="feedback-feature" value="other">Other - please specify in comments</label>
+					<label class="checkbox" for="feature-1"><input type="checkbox" id="feature-1" name="feedback-feature[]" value="social-media">Social media integration (Facebook, Twitter, etc.)</label>
+					<label class="checkbox" for="feature-2"><input type="checkbox" id="feature-2" name="feedback-feature[]" value="user-reviews">User reviews of beers/breweries</label>
+					<label class="checkbox" for="feature-3"><input type="checkbox" id="feature-3" name="feedback-feature[]" value="personal-notes">Personal notes about beers/breweries</label>
+					<label class="checkbox" for="feature-4"><input type="checkbox" id="feature-4" name="feedback-feature[]" value="send-to-friend">Send beer recommendations to friends</label>
+					<label class="checkbox" for="feature-o"><input type="checkbox" id="feature-o" name="feedback-feature[]" value="other">Other - please specify in comments</label>
 				</div>
 
 				<label for="feedback-comments">Comments</label>

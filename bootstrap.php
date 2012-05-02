@@ -47,6 +47,19 @@ $app['brewerydb'] = $app->share(function ($app) {
 	return new Pintlabs_Service_Brewerydb(getenv('BREWERYDB_API_KEY'));
 });
 
+$smtpParts = parse_url(trim(getenv('SMTP_URL')));
+$app->register(new Silex\Provider\SwiftmailerServiceProvider(), array(
+	'swiftmailer.class_path' => APPLICATION_LIB.'/SwiftMailer/lib/classes',
+	'swiftmailer.options' => array(
+		'host' => $smtpParts['host'],
+		'port' => isset($smtpParts['port']) ? $smtpParts['port'] : 25,
+		'username' => isset($smtpParts['user']) ? $smtpParts['user'] : '',
+		'password' => isset($smtpParts['pass']) ? $smtpParts['pass'] : '',
+		'auth_mode' => 'plain',
+		'encryption' => 'tls',
+	),
+));
+
 // Register controllers
 Beerme\Controller\WebUi::register($app);
 Beerme\Controller\BeerApi::register($app);

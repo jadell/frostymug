@@ -5,7 +5,8 @@ use Silex\Application,
     Silex\Provider\SessionServiceProvider as Session,
 	Symfony\Component\HttpFoundation\Request,
     Beerme\UserStore,
-	LightOpenID;
+	LightOpenID,
+	Swift_Message as Message;
 
 class WebUi
 {
@@ -25,6 +26,7 @@ class WebUi
 			return WebUi::render($app['templateDir'].'/play.php', array(
 				'user' => $app['session']->get('user'),
 				'lastSearch' => $app['session']->get('lastSearch'),
+				'flashSuccess' => $app['session']->getFlash('flashSuccess', null),
 			));
 		});
 
@@ -84,6 +86,32 @@ class WebUi
 			$app['session']->set('user', null);
 			$app['session']->invalidate();
 			$app['session']->clear();
+			return $app->redirect('/');
+		});
+
+		$app->post('/feedback', function (Request $request) use ($app) {
+			$loggedInUser = $app['session']->get('user');
+			$realEmail = $loggedInUser ? $loggedInUser['email'] : 'unknown';
+			$givenEmail = $request->get('email', '');
+			$how = $request->get('how', '');
+			$features = implode(', ', $request->get('feedback-feature', array()));
+			$comments = $request->get('comments', '');
+			$body =  "Feedback from: $realEmail"."\n\n"
+			       . "Given email: $givenEmail"."\n\n"
+			       . "How did they find FrostyMug: $how"."\n\n"
+			       . "Most desired features: $features"."\n\n"
+			       . "Comments: $comments";
+			$message = Message::newInstance()
+				->setFrom('frostymug.beer@gmail.com')
+				->setTo('frostymug.beer@gmail.com')
+				->setSubject('FrostyMug Feedback')
+				->setBody($body);
+			if ($givenEmail) {
+				$message->setSender($givenEmail)
+					->setReplyTo($givenEmail);
+			}
+			$app['mailer']->send($message);
+			$app['session']->setFlash('flashSuccess', '<strong>Thank you!</strong> Your feedback is appreciated.');
 			return $app->redirect('/');
 		});
 	}
