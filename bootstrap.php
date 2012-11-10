@@ -28,7 +28,7 @@ $app['baseUrl'] = $app->share(function ($app) {
 });
 
 $app['neo4j'] = $app->share(function ($app) {
-	$neo4jUrl = trim(getenv('NEO4J_REST_URL'));
+	$neo4jUrl = trim(getenv('NEO4J_URL'));
 	if (!$neo4jUrl) {
 		$neo4jUrl = 'http://localhost:7474';
 	}
