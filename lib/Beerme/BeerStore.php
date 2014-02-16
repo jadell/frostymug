@@ -17,7 +17,7 @@ use Silex\Application,
 class BeerStore
 {
 	protected $breweryDb;
-	protected $neo4j;
+	protected $client;
 
 	protected $breweryIndex;
 	protected $breweryRef;
@@ -28,12 +28,12 @@ class BeerStore
 	/**
 	 * Set up the store
 	 *
-	 * @param Client $neo4j
+	 * @param Client $client
 	 * @param BreweryDb $breweryDb
 	 */
-	public function __construct(Client $neo4j, BreweryDb $breweryDb)
+	public function __construct(Client $client, BreweryDb $breweryDb)
 	{
-		$this->neo4j = $neo4j;
+		$this->client = $client;
 		$this->breweryDb = $breweryDb;
 	}
 
@@ -91,7 +91,7 @@ class BeerStore
 		        .sort{a,b -> b.value <=> a.value}[0..24]
 		        .collect{key,value -> [g.v(key), value]}._()
 GREMLIN;
-		$query = new Gremlin($this->neo4j, $gremlin, array(
+		$query = new Gremlin($this->client, $gremlin, array(
 			'userId'=>$userNodeId,
 		));
 		$results = $query->getResultSet();
@@ -99,7 +99,7 @@ GREMLIN;
 		$beers = array();
 		foreach ($results as $row) {
 			// Work around a nested array bug in parsing result sets
-			$beerNode = $this->neo4j->getEntityMapper()->getEntityFor($row[0][0]);
+			$beerNode = $this->client->getEntityMapper()->getEntityFor($row[0][0]);
 			$beers[] = new Beer($beerNode, $this, new StaticRating(null, $row[0][1]));
 		}
 		return $beers;
@@ -171,7 +171,7 @@ GREMLIN;
 		m.findAll{it.value[1]/it.value[0] <= 2}.collect{g.v(it.key)}._()
 		        .outE("RATED").inV.filter{it==beer}.back(2).dedup().rating.mean()
 GREMLIN;
-		$query = new Gremlin($this->neo4j, $gremlin, array(
+		$query = new Gremlin($this->client, $gremlin, array(
 			'userId'=>$userNodeId,
 			'beerId'=>$beerNodeId
 		));
@@ -265,7 +265,13 @@ GREMLIN;
 	 */
 	public function searchBeers($searchTerm, $nameOnly=false)
 	{
-		$results = $this->breweryDb->search($searchTerm, 'beer');
+		$params = array(
+			'q' => $searchTerm,
+			'type' => 'beer',
+			'withBreweries' => 'Y'
+		);
+
+		$results = $this->breweryDb->request('/search', $params);
 
 		if (!isset($results['data'])) {
 			$results['data'] = array();
@@ -332,20 +338,14 @@ GREMLIN;
 			'icon' => isset($beerData['labels']['icon']) ? $beerData['labels']['icon'] : null,
 		);
 
-		$client = $this->neo4j;
-		$index = $this->getBeerIndex();
-		$ref = $this->getBeerReference();
+		$client = $this->client;
+		$beerLabel = $this->getBeerLabel();
 
-		$client->startBatch();
 		$node = $client->makeNode()
 			->setProperties($properties)
-			->save()
-			->relateTo($ref, 'BEER')
-				->save()
-				->getStartNode();
-		$index->add($node, 'id', $node->getProperty('id'));
+			->save();
+		$node->addLabels(array($beerLabel));
 		$brewery->getNode()->relateTo($node, 'BREWS')->save();
-		$client->commitBatch();
 
 		return new Beer($node, $this, new LookupRating($this));
 	}
@@ -369,19 +369,13 @@ GREMLIN;
 			'icon' => isset($breweryData['images']['icon']) ? $breweryData['images']['icon'] : null,
 		);
 
-		$client = $this->neo4j;
-		$index = $this->getBreweryIndex();
-		$ref = $this->getBreweryReference();
+		$client = $this->client;
+		$breweryLabel = $this->getBreweryLabel();
 
-		$client->startBatch();
 		$node = $client->makeNode()
 			->setProperties($properties)
-			->save()
-			->relateTo($ref, 'BREWERY')
-				->save()
-				->getStartNode();
-		$index->add($node, 'id', $node->getProperty('id'));
-		$client->commitBatch();
+			->save();
+		$node->addLabels(array($breweryLabel));
 
 		return new Brewery($node);
 	}
@@ -411,10 +405,10 @@ GREMLIN;
 	 */
 	protected function findBeerInGraph($id)
 	{
-		$index = $this->getBeerIndex();
-		$node = $index->findOne('id', $id);
-		if ($node) {
-			return new Beer($node, $this, new LookupRating($this));
+		$label = $this->getBeerLabel();
+		$nodes = $label->getNodes('id', $id);
+		if (count($nodes)) {
+			return new Beer($nodes[0], $this, new LookupRating($this));
 		}
 		return null;
 	}
@@ -444,10 +438,10 @@ GREMLIN;
 	 */
 	protected function findBreweryInGraph($id)
 	{
-		$index = $this->getBreweryIndex();
-		$node = $index->findOne('id', $id);
-		if ($node) {
-			return new Brewery($node);
+		$label = $this->getBreweryLabel();
+		$nodes = $label->getNodes('id', $id);
+		if (count($nodes)) {
+			return new Brewery($nodes[0]);
 		}
 		return null;
 	}
@@ -463,90 +457,34 @@ GREMLIN;
 	 */
 	protected function findRatingRelationships(User $user, Beer $beer=null)
 	{
-		$cypher = "START u=node({user})";
+		$cypher = "MATCH (u:User)-[r:RATED]-(b:Beer) WHERE ID(u)={user}";
 		$params = array('user' => $user->getNode()->getId());
 		if ($beer) {
-			$cypher .= ", b=node({beer})";
+			$cypher .= " AND ID(b)={beer}";
 			$params['beer'] = $beer->getNode()->getId();
 		}
-		$cypher .= "MATCH u-[r:RATED]->b RETURN b, r ORDER BY b.name";
-		$query = new Cypher($this->neo4j, $cypher, $params);
+		$cypher .= " RETURN b, r ORDER BY b.name";
+		$query = new Cypher($this->client, $cypher, $params);
 		return $query->getResultSet();
 	}
 
 	/**
-	 * Get the Beer index
+	 * Get the Beer label
 	 *
-	 * @return NodeIndex
+	 * @return Label
 	 */
-	protected function getBeerIndex()
+	protected function getBeerLabel()
 	{
-		if (!$this->beerIndex) {
-			$this->beerIndex = new NodeIndex($this->neo4j, 'BEER');
-			$this->beerIndex->save();
-		}
-		return $this->beerIndex;
+		return $this->client->makeLabel('Beer');
 	}
 
 	/**
-	 * Find the beer reference node or create it if it doesn't exist
+	 * Get the Breweries label
 	 *
-	 * @return Node
+	 * @return Label
 	 */
-	protected function getBeerReference()
+	protected function getBreweryLabel()
 	{
-		if (!$this->beerRef) {
-			$client = $this->neo4j;
-			$query = new Cypher($client, "START z=node(0) MATCH (z)-[:BEERS]->(ref) RETURN ref");
-			$results = $query->getResultSet();
-			if (count($results) < 1) {
-				$this->beerRef = $client->getReferenceNode()
-					->relateTo($client->makeNode()->save(), 'BEERS')
-					->save()
-					->getEndNode();
-			} else {
-				$this->beerRef = $results[0]['ref'];
-			}
-		}
-
-		return $this->beerRef;
-	}
-
-	/**
-	 * Get the Breweries index
-	 *
-	 * @return NodeIndex
-	 */
-	protected function getBreweryIndex()
-	{
-		if (!$this->breweryIndex) {
-			$this->breweryIndex = new NodeIndex($this->neo4j, 'BREWERIES');
-			$this->breweryIndex->save();
-		}
-		return $this->breweryIndex;
-	}
-
-	/**
-	 * Find the brewery reference node or create it if it doesn't exist
-	 *
-	 * @return Node
-	 */
-	protected function getBreweryReference()
-	{
-		if (!$this->breweryRef) {
-			$client = $this->neo4j;
-			$query = new Cypher($client, "START z=node(0) MATCH (z)-[:BREWERIES]->(ref) RETURN ref");
-			$results = $query->getResultSet();
-			if (count($results) < 1) {
-				$this->breweryRef = $client->getReferenceNode()
-					->relateTo($client->makeNode()->save(), 'BREWERIES')
-					->save()
-					->getEndNode();
-			} else {
-				$this->breweryRef = $results[0]['ref'];
-			}
-		}
-
-		return $this->breweryRef;
+		return $this->client->makeLabel('Brewery');
 	}
 }

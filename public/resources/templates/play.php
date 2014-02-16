@@ -72,12 +72,12 @@
 		</div>
 
 		<div class="container">
-			<?php if ($flashSuccess) : ?>
+			<?php foreach ($flashSuccess as $message) : ?>
 			<div class="alert alert-success fade in">
 				<a class="close" data-dismiss="alert">&times;</a>
-				<?php echo $flashSuccess; ?>
+				<?php echo $message; ?>
 			</div>
-			<?php endif; ?>
+			<?php endforeach; ?>
 
 			<div id="search-results">
 				<h2>Welcome to FrostyMug!</h2>

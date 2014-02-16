@@ -5,17 +5,7 @@ ini_set('display_startup_errors', 'On');
 define('APPLICATION_ROOT', __DIR__);
 define('APPLICATION_LIB', APPLICATION_ROOT.'/lib');
 
-require('phar://'.APPLICATION_LIB.'/neo4jphp.phar');
-require('phar://'.APPLICATION_LIB.'/silex.phar');
-spl_autoload_register(function ($className) {
-	$classFile = $className;
-	$classFile = str_replace('_',DIRECTORY_SEPARATOR,$classFile);
-	$classFile = str_replace('\\',DIRECTORY_SEPARATOR,$classFile);
-	$classPath = APPLICATION_LIB.'/'.$classFile.'.php';
-	if (file_exists($classPath)) {
-		require($classPath);
-	}
-});
+require(APPLICATION_ROOT.'/vendor/autoload.php');
 
 $app = new Silex\Application();
 $app['debug'] = true;
@@ -45,6 +35,10 @@ $app['neo4j'] = $app->share(function ($app) {
 
 $app['brewerydb'] = $app->share(function ($app) {
 	return new Pintlabs_Service_Brewerydb(getenv('BREWERYDB_API_KEY'));
+});
+
+$app['openid'] = $app->share(function ($app) {
+	return new LightOpenID($_SERVER['HTTP_HOST']);
 });
 
 $smtpParts = parse_url(trim(getenv('SMTP_URL')));

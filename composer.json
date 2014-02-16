@@ -1,0 +1,29 @@
+{
+  "repositories": [{
+    "type": "package",
+    "package": {
+      "name": "pintlabs/brewerydb",
+      "version": "0.1.0",
+      "source": {
+        "url": "git@github.com:PintLabs/PHP-Brewerydb.git",
+        "type": "git",
+        "reference": "master"
+      },
+      "autoload": {
+        "psr-0": { "": "." }
+      }
+    }
+  }],
+
+  "require": {
+    "everyman/neo4jphp": "dev-master",
+    "swiftmailer/swiftmailer": "4.1.*",
+    "silex/silex": "1.1.*",
+    "lightopenid/lightopenid": "v0.7.0",
+    "pintlabs/brewerydb": "*"
+  },
+
+  "autoload": {
+    "psr-0": {"Beerme":"lib/"}
+  }
+}

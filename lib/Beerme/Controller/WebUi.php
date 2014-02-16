@@ -5,7 +5,6 @@ use Silex\Application,
     Silex\Provider\SessionServiceProvider as Session,
 	Symfony\Component\HttpFoundation\Request,
     Beerme\UserStore,
-	LightOpenID,
 	Swift_Message as Message;
 
 class WebUi
@@ -26,7 +25,7 @@ class WebUi
 			return WebUi::render($app['templateDir'].'/play.php', array(
 				'user' => $app['session']->get('user'),
 				'lastSearch' => $app['session']->get('lastSearch'),
-				'flashSuccess' => $app['session']->getFlash('flashSuccess', null),
+				'flashSuccess' => $app['session']->getFlashBag()->get('flashSuccess', array()),
 			));
 		});
 
@@ -36,7 +35,7 @@ class WebUi
 				$app['session']->set('loginBeerId', $request->get('beer_id'));
 				$app['session']->set('loginRating', $request->get('rating'));
 
-				$openId = new LightOpenID($_SERVER['HTTP_HOST']);
+				$openId = $app['openid'];
 				$openId->identity = $identifier;
 				$openId->required = array('contact/email');
 
@@ -48,7 +47,7 @@ class WebUi
 
 		$app->get('/login', function () use ($app) {
 			try {
-				$openId = new LightOpenID($_SERVER['HTTP_HOST']);
+				$openId = $app['openid'];
 				if ($openId->mode == 'cancel') {
 					return $app->redirect('/');
 				} else if (!$openId->validate()) {
@@ -111,7 +110,7 @@ class WebUi
 					->setReplyTo($givenEmail);
 			}
 			$app['mailer']->send($message);
-			$app['session']->setFlash('flashSuccess', '<strong>Thank you!</strong> Your feedback is appreciated.');
+			$app['session']->getFlashBag()->set('flashSuccess', '<strong>Thank you!</strong> Your feedback is appreciated.');
 			return $app->redirect('/');
 		});
 	}
